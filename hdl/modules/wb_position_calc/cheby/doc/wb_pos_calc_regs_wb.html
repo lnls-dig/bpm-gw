@@ -581,30 +581,65 @@
 <tr class="tr_even">
 <td class="td_code">0x11c</td>
 <td>REG</td>
-<td><A href="#amp_gain_ch0">amp_gain_ch0</a></td>
-<td class="td_code">amp_gain_ch0</td>
-<td class="td_code">amp_gain_ch0</td>
+<td><A href="#adc_gains_fixed_point_pos">adc_gains_fixed_point_pos</a></td>
+<td class="td_code">adc_gains_fixed_point_pos</td>
+<td class="td_code">adc_gains_fixed_point_pos</td>
 </tr>
 <tr class="tr_odd">
 <td class="td_code">0x120</td>
 <td>REG</td>
-<td><A href="#amp_gain_ch1">amp_gain_ch1</a></td>
-<td class="td_code">amp_gain_ch1</td>
-<td class="td_code">amp_gain_ch1</td>
+<td><A href="#adc_ch0_swclk_0_gain">adc_ch0_swclk_0_gain</a></td>
+<td class="td_code">adc_ch0_swclk_0_gain</td>
+<td class="td_code">adc_ch0_swclk_0_gain</td>
 </tr>
 <tr class="tr_even">
 <td class="td_code">0x124</td>
 <td>REG</td>
-<td><A href="#amp_gain_ch2">amp_gain_ch2</a></td>
-<td class="td_code">amp_gain_ch2</td>
-<td class="td_code">amp_gain_ch2</td>
+<td><A href="#adc_ch1_swclk_0_gain">adc_ch1_swclk_0_gain</a></td>
+<td class="td_code">adc_ch1_swclk_0_gain</td>
+<td class="td_code">adc_ch1_swclk_0_gain</td>
 </tr>
 <tr class="tr_odd">
 <td class="td_code">0x128</td>
 <td>REG</td>
-<td><A href="#amp_gain_ch3">amp_gain_ch3</a></td>
-<td class="td_code">amp_gain_ch3</td>
-<td class="td_code">amp_gain_ch3</td>
+<td><A href="#adc_ch2_swclk_0_gain">adc_ch2_swclk_0_gain</a></td>
+<td class="td_code">adc_ch2_swclk_0_gain</td>
+<td class="td_code">adc_ch2_swclk_0_gain</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x12c</td>
+<td>REG</td>
+<td><A href="#adc_ch3_swclk_0_gain">adc_ch3_swclk_0_gain</a></td>
+<td class="td_code">adc_ch3_swclk_0_gain</td>
+<td class="td_code">adc_ch3_swclk_0_gain</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x130</td>
+<td>REG</td>
+<td><A href="#adc_ch0_swclk_1_gain">adc_ch0_swclk_1_gain</a></td>
+<td class="td_code">adc_ch0_swclk_1_gain</td>
+<td class="td_code">adc_ch0_swclk_1_gain</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x134</td>
+<td>REG</td>
+<td><A href="#adc_ch1_swclk_1_gain">adc_ch1_swclk_1_gain</a></td>
+<td class="td_code">adc_ch1_swclk_1_gain</td>
+<td class="td_code">adc_ch1_swclk_1_gain</td>
+</tr>
+<tr class="tr_odd">
+<td class="td_code">0x138</td>
+<td>REG</td>
+<td><A href="#adc_ch2_swclk_1_gain">adc_ch2_swclk_1_gain</a></td>
+<td class="td_code">adc_ch2_swclk_1_gain</td>
+<td class="td_code">adc_ch2_swclk_1_gain</td>
+</tr>
+<tr class="tr_even">
+<td class="td_code">0x13c</td>
+<td>REG</td>
+<td><A href="#adc_ch3_swclk_1_gain">adc_ch3_swclk_1_gain</a></td>
+<td class="td_code">adc_ch3_swclk_1_gain</td>
+<td class="td_code">adc_ch3_swclk_1_gain</td>
 </tr>
 </table>
 
@@ -6113,16 +6148,16 @@ offset_y
 </b>[<i>rw</i>]: BPM Y position offset parameter register
 <br>BPM Y position offset to be subtracted from calculated positions
 </ul>
-<a name="amp_gain_ch0"></a>
-<h3><a name="sect_3_72">2.72. amp_gain_ch0</a></h3>
+<a name="adc_gains_fixed_point_pos"></a>
+<h3><a name="sect_3_72">2.72. adc_gains_fixed_point_pos</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
-<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch0</td></tr>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_gains_fixed_point_pos</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x11c</td></tr>
-<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch0</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_gains_fixed_point_pos</td></tr>
 <tr><td><b>C block offset:</b></td><td class="td_code">0x11c</td></tr>
 </table>
 <p>
-Amplitude gain for channel 0
+ADC gains fixed-point position constant
 </p>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -6136,8 +6171,7 @@ Amplitude gain for channel 0
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
- <td class="td_field" colspan="1">data[24:24]</td>
+ <td class="td_field" colspan="8">data[31:24]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -6182,23 +6216,18 @@ Amplitude gain for channel 0
 <ul>
 <li><b>
 data
-</b>[<i>rw</i>]: Amplitude gain for channel 0
-<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
+</b>[<i>rw</i>]: fixed-point position constant value
 </ul>
-<a name="amp_gain_ch1"></a>
-<h3><a name="sect_3_73">2.73. amp_gain_ch1</a></h3>
+<a name="adc_ch0_swclk_0_gain"></a>
+<h3><a name="sect_3_73">2.73. adc_ch0_swclk_0_gain</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
-<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch1</td></tr>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch0_swclk_0_gain</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x120</td></tr>
-<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch1</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch0_swclk_0_gain</td></tr>
 <tr><td><b>C block offset:</b></td><td class="td_code">0x120</td></tr>
 </table>
 <p>
-Amplitude gain for channel 1
+ADC channel 0 gain on RFFE switch state 0 (inverted)
 </p>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -6212,8 +6241,7 @@ Amplitude gain for channel 1
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
- <td class="td_field" colspan="1">data[24:24]</td>
+ <td class="td_field" colspan="8">data[31:24]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -6258,23 +6286,19 @@ Amplitude gain for channel 1
 <ul>
 <li><b>
 data
-</b>[<i>rw</i>]: Amplitude gain for channel 1
-<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
 </ul>
-<a name="amp_gain_ch2"></a>
-<h3><a name="sect_3_74">2.74. amp_gain_ch2</a></h3>
+<a name="adc_ch1_swclk_0_gain"></a>
+<h3><a name="sect_3_74">2.74. adc_ch1_swclk_0_gain</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
-<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch2</td></tr>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch1_swclk_0_gain</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x124</td></tr>
-<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch2</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch1_swclk_0_gain</td></tr>
 <tr><td><b>C block offset:</b></td><td class="td_code">0x124</td></tr>
 </table>
 <p>
-Amplitude gain for channel 2
+ADC channel 1 gain on RFFE switch state 0 (inverted)
 </p>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -6288,8 +6312,7 @@ Amplitude gain for channel 2
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
- <td class="td_field" colspan="1">data[24:24]</td>
+ <td class="td_field" colspan="8">data[31:24]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -6334,23 +6357,19 @@ Amplitude gain for channel 2
 <ul>
 <li><b>
 data
-</b>[<i>rw</i>]: Amplitude gain for channel 2
-<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
 </ul>
-<a name="amp_gain_ch3"></a>
-<h3><a name="sect_3_75">2.75. amp_gain_ch3</a></h3>
+<a name="adc_ch2_swclk_0_gain"></a>
+<h3><a name="sect_3_75">2.75. adc_ch2_swclk_0_gain</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
-<tr><td><b>HW prefix:</b></td><td class="td_code">amp_gain_ch3</td></tr>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch2_swclk_0_gain</td></tr>
 <tr><td><b>HW address:</b></td><td class="td_code">0x128</td></tr>
-<tr><td><b>C prefix:</b></td><td class="td_code">amp_gain_ch3</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch2_swclk_0_gain</td></tr>
 <tr><td><b>C block offset:</b></td><td class="td_code">0x128</td></tr>
 </table>
 <p>
-Amplitude gain for channel 3
+ADC channel 2 gain on RFFE switch state 0 (inverted)
 </p>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -6364,8 +6383,7 @@ Amplitude gain for channel 3
  <td class="td_bit" colspan="1">24</td>
 </tr>
 <tr>
- <td class="td_field" colspan="7">reserved[6:0]</td>
- <td class="td_field" colspan="1">data[24:24]</td>
+ <td class="td_field" colspan="8">data[31:24]</td>
 </tr>
 <tr>
  <td class="td_bit" colspan="1">23</td>
@@ -6410,12 +6428,363 @@ Amplitude gain for channel 3
 <ul>
 <li><b>
 data
-</b>[<i>rw</i>]: Amplitude gain for channel 3
-<br>Amplitude gain parameter, in SFIX25_24.<br>It effectively multiplies the amplitude<br>with a determined value.
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
+</ul>
+<a name="adc_ch3_swclk_0_gain"></a>
+<h3><a name="sect_3_76">2.76. adc_ch3_swclk_0_gain</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch3_swclk_0_gain</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x12c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch3_swclk_0_gain</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x12c</td></tr>
+</table>
+<p>
+ADC channel 3 gain on RFFE switch state 0 (inverted)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
 <li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
+data
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
+</ul>
+<a name="adc_ch0_swclk_1_gain"></a>
+<h3><a name="sect_3_77">2.77. adc_ch0_swclk_1_gain</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch0_swclk_1_gain</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x130</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch0_swclk_1_gain</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x130</td></tr>
+</table>
+<p>
+ADC channel 0 gain on RFFE switch state 1 (direct)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
+</ul>
+<a name="adc_ch1_swclk_1_gain"></a>
+<h3><a name="sect_3_78">2.78. adc_ch1_swclk_1_gain</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch1_swclk_1_gain</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x134</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch1_swclk_1_gain</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x134</td></tr>
+</table>
+<p>
+ADC channel 1 gain on RFFE switch state 1 (direct)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
+</ul>
+<a name="adc_ch2_swclk_1_gain"></a>
+<h3><a name="sect_3_79">2.79. adc_ch2_swclk_1_gain</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch2_swclk_1_gain</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x138</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch2_swclk_1_gain</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x138</td></tr>
+</table>
+<p>
+ADC channel 2 gain on RFFE switch state 1 (direct)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
+</ul>
+<a name="adc_ch3_swclk_1_gain"></a>
+<h3><a name="sect_3_80">2.80. adc_ch3_swclk_1_gain</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr><td><b>HW prefix:</b></td><td class="td_code">adc_ch3_swclk_1_gain</td></tr>
+<tr><td><b>HW address:</b></td><td class="td_code">0x13c</td></tr>
+<tr><td><b>C prefix:</b></td><td class="td_code">adc_ch3_swclk_1_gain</td></tr>
+<tr><td><b>C block offset:</b></td><td class="td_code">0x13c</td></tr>
+</table>
+<p>
+ADC channel 3 gain on RFFE switch state 1 (direct)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+ <td class="td_bit" colspan="1">31</td>
+ <td class="td_bit" colspan="1">30</td>
+ <td class="td_bit" colspan="1">29</td>
+ <td class="td_bit" colspan="1">28</td>
+ <td class="td_bit" colspan="1">27</td>
+ <td class="td_bit" colspan="1">26</td>
+ <td class="td_bit" colspan="1">25</td>
+ <td class="td_bit" colspan="1">24</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[31:24]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">23</td>
+ <td class="td_bit" colspan="1">22</td>
+ <td class="td_bit" colspan="1">21</td>
+ <td class="td_bit" colspan="1">20</td>
+ <td class="td_bit" colspan="1">19</td>
+ <td class="td_bit" colspan="1">18</td>
+ <td class="td_bit" colspan="1">17</td>
+ <td class="td_bit" colspan="1">16</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[23:16]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">15</td>
+ <td class="td_bit" colspan="1">14</td>
+ <td class="td_bit" colspan="1">13</td>
+ <td class="td_bit" colspan="1">12</td>
+ <td class="td_bit" colspan="1">11</td>
+ <td class="td_bit" colspan="1">10</td>
+ <td class="td_bit" colspan="1">9</td>
+ <td class="td_bit" colspan="1">8</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[15:8]</td>
+</tr>
+<tr>
+ <td class="td_bit" colspan="1">7</td>
+ <td class="td_bit" colspan="1">6</td>
+ <td class="td_bit" colspan="1">5</td>
+ <td class="td_bit" colspan="1">4</td>
+ <td class="td_bit" colspan="1">3</td>
+ <td class="td_bit" colspan="1">2</td>
+ <td class="td_bit" colspan="1">1</td>
+ <td class="td_bit" colspan="1">0</td>
+</tr>
+<tr>
+ <td class="td_field" colspan="8">data[7:0]</td>
+</tr>
+</table>
+<ul>
+<li><b>
+data
+</b>[<i>rw</i>]: gain
+<br>SFIX32_31.
 </ul>
 
 

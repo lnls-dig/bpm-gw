@@ -232,7 +232,7 @@ package bpm_cores_pkg is
       g_k_width                  : natural  := 25;
       g_offset_width             : natural  := 32;
       g_IQ_width                 : natural  := 32;
-      g_amp_gain_width           : natural  := 25);
+      g_adc_gain_width           : natural  := 25);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
       adc_ch1_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -246,10 +246,14 @@ package bpm_cores_pkg is
       ksum_i             : in  std_logic_vector(g_k_width-1 downto 0);
       kx_i               : in  std_logic_vector(g_k_width-1 downto 0);
       ky_i               : in  std_logic_vector(g_k_width-1 downto 0);
-      amp_gain_ch0_i     : in std_logic_vector(g_amp_gain_width-1 downto 0);
-      amp_gain_ch1_i     : in std_logic_vector(g_amp_gain_width-1 downto 0);
-      amp_gain_ch2_i     : in std_logic_vector(g_amp_gain_width-1 downto 0);
-      amp_gain_ch3_i     : in std_logic_vector(g_amp_gain_width-1 downto 0);
+      adc_ch0_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch1_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch2_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch3_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch0_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch1_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch2_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch3_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
       offset_x_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       offset_y_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
@@ -659,7 +663,10 @@ package bpm_cores_pkg is
 
         -- Swap/de-swap setup
         g_delay_vec_width         : natural := 8;
-        g_swap_div_freq_vec_width : natural := 16
+        g_swap_div_freq_vec_width : natural := 16;
+
+        -- width of adc gains
+        g_adc_gain_width          : natural  := 25
         );
     port
       (
@@ -902,7 +909,10 @@ package bpm_cores_pkg is
 
         -- Swap/de-swap setup
         g_delay_vec_width         : natural := 8;
-        g_swap_div_freq_vec_width : natural := 16
+        g_swap_div_freq_vec_width : natural := 16;
+
+        -- width of adc gains
+        g_adc_gain_width          : natural  := 25
         );
     port
       (

@@ -90,6 +90,8 @@ package machine_pkg is
   constant c_pos_calc_offset_width              : natural := 32;
   constant c_pos_calc_IQ_width                  : natural := c_pos_calc_mixed_width;
 
+  constant c_pos_calc_adc_gain_width            : natural := 25;
+
   constant c_pos_calc_k_sum                     : natural := 85e5;
   constant c_pos_calc_k_x                       : natural := 85e5;
   constant c_pos_calc_k_y                       : natural := 85e5;

@@ -94,7 +94,11 @@ generic
 
   -- Swap/de-swap setup
   g_delay_vec_width                         : natural := 8;
-  g_swap_div_freq_vec_width                 : natural := 16
+  g_swap_div_freq_vec_width                 : natural := 16;
+
+  -- width of adc gains
+  g_adc_gain_width                          : natural  := 25
+
 );
 port
 (
@@ -327,6 +331,8 @@ begin
 
     --width for IQ output
     g_IQ_width                               => g_IQ_width,
+
+    g_adc_gain_width                         => g_adc_gain_width,
 
     -- Swap/de-swap setup
     g_delay_vec_width                        => g_delay_vec_width,

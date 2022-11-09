@@ -3019,6 +3019,9 @@ begin
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
 
+    -- width of adc gains
+    g_adc_gain_width                        => c_pos_calc_adc_gain_width,
+
     -- Swap/de-swap setup
     g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,
     g_swap_div_freq_vec_width               => c_POS_CALC_SWAP_DIV_FREQ_VEC_WIDTH
@@ -3244,6 +3247,9 @@ begin
 
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
+
+    -- width of adc gains
+    g_adc_gain_width                        => c_pos_calc_adc_gain_width,
 
     -- Swap/de-swap setup
     g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,

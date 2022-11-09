@@ -1,6 +1,6 @@
 #ifndef __CHEBY__POS_CALC__H__
 #define __CHEBY__POS_CALC__H__
-#define POS_CALC_SIZE 300 /* 0x12c */
+#define POS_CALC_SIZE 320 /* 0x140 */
 
 /* Config divisor threshold TBT register */
 #define POS_CALC_DS_TBT_THRES 0x0UL
@@ -408,33 +408,50 @@
 /* BPM Y position offset parameter register */
 #define POS_CALC_OFFSET_Y 0x118UL
 
-/* Amplitude gain for channel 0 */
-#define POS_CALC_AMP_GAIN_CH0 0x11cUL
-#define POS_CALC_AMP_GAIN_CH0_DATA_MASK 0x1ffffffUL
-#define POS_CALC_AMP_GAIN_CH0_DATA_SHIFT 0
-#define POS_CALC_AMP_GAIN_CH0_RESERVED_MASK 0xfe000000UL
-#define POS_CALC_AMP_GAIN_CH0_RESERVED_SHIFT 25
+/* ADC gains fixed-point position constant */
+#define POS_CALC_ADC_GAINS_FIXED_POINT_POS 0x11cUL
+#define POS_CALC_ADC_GAINS_FIXED_POINT_POS_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_GAINS_FIXED_POINT_POS_DATA_SHIFT 0
 
-/* Amplitude gain for channel 1 */
-#define POS_CALC_AMP_GAIN_CH1 0x120UL
-#define POS_CALC_AMP_GAIN_CH1_DATA_MASK 0x1ffffffUL
-#define POS_CALC_AMP_GAIN_CH1_DATA_SHIFT 0
-#define POS_CALC_AMP_GAIN_CH1_RESERVED_MASK 0xfe000000UL
-#define POS_CALC_AMP_GAIN_CH1_RESERVED_SHIFT 25
+/* ADC channel 0 gain on RFFE switch state 0 (inverted) */
+#define POS_CALC_ADC_CH0_SWCLK_0_GAIN 0x120UL
+#define POS_CALC_ADC_CH0_SWCLK_0_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH0_SWCLK_0_GAIN_DATA_SHIFT 0
 
-/* Amplitude gain for channel 2 */
-#define POS_CALC_AMP_GAIN_CH2 0x124UL
-#define POS_CALC_AMP_GAIN_CH2_DATA_MASK 0x1ffffffUL
-#define POS_CALC_AMP_GAIN_CH2_DATA_SHIFT 0
-#define POS_CALC_AMP_GAIN_CH2_RESERVED_MASK 0xfe000000UL
-#define POS_CALC_AMP_GAIN_CH2_RESERVED_SHIFT 25
+/* ADC channel 1 gain on RFFE switch state 0 (inverted) */
+#define POS_CALC_ADC_CH1_SWCLK_0_GAIN 0x124UL
+#define POS_CALC_ADC_CH1_SWCLK_0_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH1_SWCLK_0_GAIN_DATA_SHIFT 0
 
-/* Amplitude gain for channel 3 */
-#define POS_CALC_AMP_GAIN_CH3 0x128UL
-#define POS_CALC_AMP_GAIN_CH3_DATA_MASK 0x1ffffffUL
-#define POS_CALC_AMP_GAIN_CH3_DATA_SHIFT 0
-#define POS_CALC_AMP_GAIN_CH3_RESERVED_MASK 0xfe000000UL
-#define POS_CALC_AMP_GAIN_CH3_RESERVED_SHIFT 25
+/* ADC channel 2 gain on RFFE switch state 0 (inverted) */
+#define POS_CALC_ADC_CH2_SWCLK_0_GAIN 0x128UL
+#define POS_CALC_ADC_CH2_SWCLK_0_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH2_SWCLK_0_GAIN_DATA_SHIFT 0
+
+/* ADC channel 3 gain on RFFE switch state 0 (inverted) */
+#define POS_CALC_ADC_CH3_SWCLK_0_GAIN 0x12cUL
+#define POS_CALC_ADC_CH3_SWCLK_0_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH3_SWCLK_0_GAIN_DATA_SHIFT 0
+
+/* ADC channel 0 gain on RFFE switch state 1 (direct) */
+#define POS_CALC_ADC_CH0_SWCLK_1_GAIN 0x130UL
+#define POS_CALC_ADC_CH0_SWCLK_1_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH0_SWCLK_1_GAIN_DATA_SHIFT 0
+
+/* ADC channel 1 gain on RFFE switch state 1 (direct) */
+#define POS_CALC_ADC_CH1_SWCLK_1_GAIN 0x134UL
+#define POS_CALC_ADC_CH1_SWCLK_1_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH1_SWCLK_1_GAIN_DATA_SHIFT 0
+
+/* ADC channel 2 gain on RFFE switch state 1 (direct) */
+#define POS_CALC_ADC_CH2_SWCLK_1_GAIN 0x138UL
+#define POS_CALC_ADC_CH2_SWCLK_1_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH2_SWCLK_1_GAIN_DATA_SHIFT 0
+
+/* ADC channel 3 gain on RFFE switch state 1 (direct) */
+#define POS_CALC_ADC_CH3_SWCLK_1_GAIN 0x13cUL
+#define POS_CALC_ADC_CH3_SWCLK_1_GAIN_DATA_MASK 0xffffffffUL
+#define POS_CALC_ADC_CH3_SWCLK_1_GAIN_DATA_SHIFT 0
 
 struct pos_calc {
   /* [0x0]: REG (rw) Config divisor threshold TBT register */
@@ -662,17 +679,32 @@ struct pos_calc {
   /* [0x118]: REG (rw) BPM Y position offset parameter register */
   uint32_t offset_y;
 
-  /* [0x11c]: REG (rw) Amplitude gain for channel 0 */
-  uint32_t amp_gain_ch0;
+  /* [0x11c]: REG (rw) ADC gains fixed-point position constant */
+  uint32_t adc_gains_fixed_point_pos;
 
-  /* [0x120]: REG (rw) Amplitude gain for channel 1 */
-  uint32_t amp_gain_ch1;
+  /* [0x120]: REG (rw) ADC channel 0 gain on RFFE switch state 0 (inverted) */
+  uint32_t adc_ch0_swclk_0_gain;
 
-  /* [0x124]: REG (rw) Amplitude gain for channel 2 */
-  uint32_t amp_gain_ch2;
+  /* [0x124]: REG (rw) ADC channel 1 gain on RFFE switch state 0 (inverted) */
+  uint32_t adc_ch1_swclk_0_gain;
 
-  /* [0x128]: REG (rw) Amplitude gain for channel 3 */
-  uint32_t amp_gain_ch3;
+  /* [0x128]: REG (rw) ADC channel 2 gain on RFFE switch state 0 (inverted) */
+  uint32_t adc_ch2_swclk_0_gain;
+
+  /* [0x12c]: REG (rw) ADC channel 3 gain on RFFE switch state 0 (inverted) */
+  uint32_t adc_ch3_swclk_0_gain;
+
+  /* [0x130]: REG (rw) ADC channel 0 gain on RFFE switch state 1 (direct) */
+  uint32_t adc_ch0_swclk_1_gain;
+
+  /* [0x134]: REG (rw) ADC channel 1 gain on RFFE switch state 1 (direct) */
+  uint32_t adc_ch1_swclk_1_gain;
+
+  /* [0x138]: REG (rw) ADC channel 2 gain on RFFE switch state 1 (direct) */
+  uint32_t adc_ch2_swclk_1_gain;
+
+  /* [0x13c]: REG (rw) ADC channel 3 gain on RFFE switch state 1 (direct) */
+  uint32_t adc_ch3_swclk_1_gain;
 };
 
 #endif /* __CHEBY__POS_CALC__H__ */
