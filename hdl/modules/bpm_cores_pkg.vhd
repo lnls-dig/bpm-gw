@@ -92,14 +92,16 @@ package bpm_cores_pkg is
   component lut_sweep is
     generic (
       g_number_of_points : natural := 203;
-      g_bus_size         : natural := 16);
+      g_bus_size         : natural := 16
+    );
     port (
-      rst_i     : in  std_logic;
-      clk_i     : in  std_logic;
-      ce_i      : in  std_logic;
-      valid_i   : in  std_logic;
-      address_o : out std_logic_vector(g_bus_size-1 downto 0);
-      valid_o   : out std_logic);
+      clk_i             : in  std_logic;
+      ce_i              : in  std_logic;
+      rst_i             : in  std_logic;
+      valid_i           : in  std_logic;
+      address_o         : out std_logic_vector(g_bus_size-1 downto 0);
+      valid_o           : out std_logic
+    );
   end component lut_sweep;
 
   component dds_sin_lut
