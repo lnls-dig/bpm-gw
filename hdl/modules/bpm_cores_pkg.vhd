@@ -28,8 +28,6 @@ package bpm_cores_pkg is
       g_mixed_width      : natural := 24;
       g_output_width     : natural := 32;
       g_phase_width      : natural := 8;
-      g_sin_file         : string  := "./dds_sin.nif";
-      g_cos_file         : string  := "./dds_cos.nif";
       g_number_of_points : natural := 6;
       g_diff_delay       : natural := 2;
       g_stages           : natural := 3;
@@ -75,18 +73,16 @@ package bpm_cores_pkg is
 
   component fixed_dds is
     generic (
-      g_number_of_points : natural := 203;
-      g_output_width     : natural := 16;
-      g_sin_file         : string  := "./dds_sin.ram";
-      g_cos_file         : string  := "./dds_cos.ram");
+      g_output_width      : natural := 16;
+      g_number_of_points  : natural := 203);
     port (
-      clk_i   : in  std_logic;
-      ce_i    : in  std_logic;
-      rst_i   : in  std_logic;
-      valid_i : in  std_logic;
-      sin_o   : out std_logic_vector(g_output_width-1 downto 0);
-      cos_o   : out std_logic_vector(g_output_width-1 downto 0);
-      valid_o : out std_logic);
+      clk_i               : in  std_logic;
+      ce_i                : in  std_logic;
+      rst_i               : in  std_logic;
+      valid_i             : in  std_logic;
+      sin_o               : out std_logic_vector(g_output_width-1 downto 0);
+      cos_o               : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o             : out std_logic);
   end component fixed_dds;
 
   component lut_sweep is
@@ -128,8 +124,6 @@ package bpm_cores_pkg is
 
   component mixer is
     generic (
-      g_sin_file         : string;
-      g_cos_file         : string;
       g_number_of_points : natural := 6;
       g_input_width      : natural := 16;
       g_dds_width        : natural := 16;
@@ -197,8 +191,6 @@ package bpm_cores_pkg is
       g_adc_ratio                : natural  := 1;
       g_dds_width                : natural  := 16;
       g_dds_points               : natural  := 35;
-      g_sin_file                 : string   := "../../../dsp-cores/hdl/modules/position_calc/dds_sin.nif";
-      g_cos_file                 : string   := "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif";
       g_tbt_tag_desync_cnt_width : natural := 14;
       g_tbt_cic_mask_samples_width : natural := 16;
       g_tbt_cic_delay            : natural  := 1;
@@ -616,8 +608,6 @@ package bpm_cores_pkg is
         -- mixer
         g_dds_width  : natural := 16;
         g_dds_points : natural := 35;
-        g_sin_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-        g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
         -- CIC setup
         g_tbt_cic_delay   : natural := 1;
@@ -861,8 +851,6 @@ package bpm_cores_pkg is
         -- mixer
         g_dds_width  : natural := 16;
         g_dds_points : natural := 35;
-        g_sin_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-        g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
         -- CIC setup
         g_tbt_cic_delay   : natural := 1;

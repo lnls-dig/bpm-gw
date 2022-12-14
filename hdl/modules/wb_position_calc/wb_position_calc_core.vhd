@@ -51,8 +51,6 @@ generic
   -- mixer
   g_dds_width                               : natural := 16;
   g_dds_points                              : natural := 35;
-  g_sin_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-  g_cos_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
   -- CIC setup
   g_tbt_cic_delay                           : natural := 1;
@@ -1695,8 +1693,6 @@ begin
     -- mixer
     g_dds_width                             => g_dds_width,
     g_dds_points                            => g_dds_points,
-    g_sin_file                              => g_sin_file,
-    g_cos_file                              => g_cos_file,
 
     g_tbt_tag_desync_cnt_width              => c_tbt_tag_desync_cnt_width,
     g_tbt_cic_mask_samples_width            => c_tbt_cic_mask_samples_width,

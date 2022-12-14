@@ -43,8 +43,6 @@ entity position_calc is
     -- mixer
     g_dds_width  : natural := 16;
     g_dds_points : natural := 35;
-    g_sin_file   : string  := "../../../dsp-cores/hdl/modules/position_calc/dds_sin.nif";
-    g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif";
 
     -- desync counter width. Tied to register width
     g_tbt_tag_desync_cnt_width   : natural := 14;
@@ -560,8 +558,6 @@ begin
 
       cmp_mixer : mixer
         generic map (
-          g_sin_file         => g_sin_file,
-          g_cos_file         => g_cos_file,
           g_number_of_points => g_dds_points,
           g_input_width      => g_input_width,
           g_dds_width        => g_dds_width,

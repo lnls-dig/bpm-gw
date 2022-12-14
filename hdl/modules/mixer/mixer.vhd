@@ -30,8 +30,6 @@ use work.bpm_cores_pkg.all;
 
 entity mixer is
   generic(
-    g_sin_file         : string  := "./dds_sin.nif";
-    g_cos_file         : string  := "./dds_cos.nif";
     g_number_of_points : natural := 6;
     g_input_width      : natural := 16;
     g_dds_width        : natural := 16;
@@ -67,9 +65,7 @@ begin
   cmp_dds : fixed_dds
     generic map (
       g_number_of_points => g_number_of_points,
-      g_output_width     => g_dds_width,
-      g_sin_file         => g_sin_file,
-      g_cos_file         => g_cos_file)
+      g_output_width     => g_dds_width)
     port map (
       clk_i   => clk_i,
       ce_i    => ce_i,

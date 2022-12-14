@@ -2977,8 +2977,6 @@ begin
     -- mixer
     g_dds_width                             => c_pos_calc_dds_width,
     g_dds_points                            => c_pos_calc_dds_points,
-    g_sin_file                              => c_pos_calc_sin_file,
-    g_cos_file                              => c_pos_calc_cos_file,
 
     -- CIC setup
     g_tbt_cic_delay                         => c_pos_calc_tbt_cic_delay,
@@ -3205,8 +3203,6 @@ begin
     -- mixer
     g_dds_width                             => c_pos_calc_dds_width,
     g_dds_points                            => c_pos_calc_dds_points,
-    g_sin_file                              => c_pos_calc_sin_file,
-    g_cos_file                              => c_pos_calc_cos_file,
 
     -- CIC setup
     g_tbt_cic_delay                         => c_pos_calc_tbt_cic_delay,
