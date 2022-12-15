@@ -74,15 +74,20 @@ package bpm_cores_pkg is
   component fixed_dds is
     generic (
       g_output_width      : natural := 16;
-      g_number_of_points  : natural := 203);
+      g_number_of_points  : natural := 203;
+      g_tag_width         : natural := 1
+    );
     port (
       clk_i               : in  std_logic;
       ce_i                : in  std_logic;
       rst_i               : in  std_logic;
       valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
       sin_o               : out std_logic_vector(g_output_width-1 downto 0);
       cos_o               : out std_logic_vector(g_output_width-1 downto 0);
-      valid_o             : out std_logic);
+      valid_o             : out std_logic;
+      tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
+    );
   end component fixed_dds;
 
   component lut_sweep is

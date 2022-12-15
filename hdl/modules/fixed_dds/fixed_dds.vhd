@@ -18,6 +18,7 @@
 -- Date        Version  Author            Description
 -- 2014-03-07  1.0      aylons            Created
 -- 2022-12-15  1.1      guilherme.ricioli Fixed pipeline stages
+-- 2022-12-15  1.2      guilherme.ricioli Added tag inteface
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -35,16 +36,20 @@ entity fixed_dds is
     g_output_width      : natural := 16;
 
     -- number of data points of sin/cos files (each)
-    g_number_of_points  : natural := 203
+    g_number_of_points  : natural := 203;
+
+    g_tag_width         : natural := 1
   );
   port (
     clk_i               : in  std_logic;
     ce_i                : in  std_logic;
     rst_i               : in  std_logic;
     valid_i             : in  std_logic;
+    tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
     sin_o               : out std_logic_vector(g_output_width-1 downto 0);
     cos_o               : out std_logic_vector(g_output_width-1 downto 0);
-    valid_o             : out std_logic
+    valid_o             : out std_logic;
+    tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
   );
 end entity fixed_dds;
 
@@ -104,6 +109,19 @@ begin
       ce_i      => ce_i,
       data_i(0) => lut_sweep_valid,
       data_o(0) => valid_o
+    );
+
+  -- leveling all delay
+  cmp_pipeline_tag : pipeline
+    generic map (
+      g_width => 1,
+      g_depth => 2
+    )
+    port map (
+      clk_i   => clk_i,
+      ce_i    => ce_i,
+      data_i  => tag_i,
+      data_o  => tag_o
     );
 
 end architecture structural;

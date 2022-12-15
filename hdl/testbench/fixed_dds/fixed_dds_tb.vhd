@@ -39,12 +39,14 @@ architecture arch of fixed_dds_tb is
 
   constant c_output_width : natural := 16;
   constant c_number_of_points : natural := 191;
+  constant c_tag_width : natural := 1;
 
   -- signals
   signal clk : std_logic := '0';
   signal ce : std_logic := '0';
   signal rst : std_logic := '1';
   signal valid : std_logic := '0';
+  signal tag : std_logic_vector(c_tag_width-1 downto 0);
   signal sin : std_logic_vector(c_output_width-1 downto 0);
   signal cos : std_logic_vector(c_output_width-1 downto 0);
   signal valid_check : std_logic := '0';
@@ -54,16 +56,19 @@ architecture arch of fixed_dds_tb is
   component fixed_dds is
     generic (
       g_output_width      : natural := 16;
-      g_number_of_points  : natural := 203
+      g_number_of_points  : natural := 203;
+      g_tag_width         : natural := 1
     );
     port (
       clk_i               : in  std_logic;
       ce_i                : in  std_logic;
       rst_i               : in  std_logic;
       valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
       sin_o               : out std_logic_vector(g_output_width-1 downto 0);
       cos_o               : out std_logic_vector(g_output_width-1 downto 0);
-      valid_o             : out std_logic
+      valid_o             : out std_logic;
+      tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
     );
   end component fixed_dds;
 
@@ -117,11 +122,13 @@ begin
     loop
       ce <= '1';
       valid <= '1';
+      tag <= (others => '1');
       f_wait_cycles(clk, 1);
     end loop;
 
     ce <= '0';
     valid <= '0';
+    tag <= (others => '0');
     f_wait_cycles(clk, 1);
     wait;
   end process;
@@ -210,16 +217,19 @@ begin
   uut : fixed_dds
     generic map (
       g_output_width      => c_output_width,
-      g_number_of_points  => c_number_of_points
+      g_number_of_points  => c_number_of_points,
+      g_tag_width         => c_tag_width
     )
     port map (
       clk_i               => clk,
       ce_i                => ce,
       rst_i               => rst,
       valid_i             => valid,
+      tag_i               => tag,
       sin_o               => sin,
       cos_o               => cos,
-      valid_o             => valid_check
+      valid_o             => valid_check,
+      tag_o               => open
   );
 
 end architecture arch;

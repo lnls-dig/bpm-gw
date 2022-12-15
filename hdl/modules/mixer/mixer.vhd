@@ -15,8 +15,9 @@
 -- Copyright (c) 2014
 -------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author  Description
--- 2014-01-21  1.0      aylons  Created
+-- Date        Version  Author            Description
+-- 2014-01-21  1.0      aylons            Created
+-- 2022-12-15  1.1      guilherme.ricioli Properly propagated tag signal
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -31,10 +32,10 @@ use work.bpm_cores_pkg.all;
 entity mixer is
   generic(
     g_number_of_points : natural := 6;
-    g_input_width      : natural := 16;
     g_dds_width        : natural := 16;
+    g_input_width      : natural := 16;
     g_output_width     : natural := 32;
-    g_tag_width        : natural := 1;      -- Input data tag width
+    g_tag_width        : natural := 1;
     g_mult_levels      : natural := 7
     );
   port(
@@ -54,26 +55,31 @@ end entity mixer;
 
 architecture rtl of mixer is
 
-  signal sine   : std_logic_vector(g_dds_width-1 downto 0);
-  signal cosine : std_logic_vector(g_dds_width-1 downto 0);
-  signal dds_valid   : std_logic;
+  signal sin, cos         : std_logic_vector(g_dds_width-1 downto 0);
+  signal fixed_dds_tag    : std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
+  signal fixed_dds_valid  : std_logic;
   signal I_valid_out : std_logic;
   signal Q_valid_out : std_logic;
 
 begin
 
-  cmp_dds : fixed_dds
+  cmp_fixed_dds : fixed_dds
     generic map (
-      g_number_of_points => g_number_of_points,
-      g_output_width     => g_dds_width)
+      g_number_of_points  => g_number_of_points,
+      g_output_width      => g_dds_width,
+      g_tag_width         => g_tag_width
+    )
     port map (
-      clk_i   => clk_i,
-      ce_i    => ce_i,
-      rst_i   => rst_i,
-      valid_i => valid_i,
-      sin_o   => sine,
-      cos_o   => cosine,
-      valid_o => dds_valid);
+      clk_i               => clk_i,
+      ce_i                => ce_i,
+      rst_i               => rst_i,
+      valid_i             => valid_i,
+      tag_i               => tag_i,
+      sin_o               => sin,
+      cos_o               => cos,
+      valid_o             => fixed_dds_valid,
+      tag_o               => fixed_dds_tag
+    );
 
   cmp_mult_I : generic_multiplier
     generic map (
@@ -85,9 +91,9 @@ begin
       g_round_convergent => 1)
     port map (
       a_i     => signal_i,
-      b_i     => cosine,
-      tag_i   => tag_i,
-      valid_i => dds_valid,
+      b_i     => cos,
+      tag_i   => fixed_dds_tag,
+      valid_i => fixed_dds_valid,
       p_o     => I_out,
       valid_o => I_valid_out,
       tag_o   => I_tag_out,
@@ -106,9 +112,9 @@ begin
       g_round_convergent => 1)
     port map (
       a_i     => signal_i,
-      b_i     => sine,
-      tag_i   => tag_i,
-      valid_i => dds_valid,
+      b_i     => sin,
+      tag_i   => fixed_dds_tag,
+      valid_i => fixed_dds_valid,
       p_o     => Q_out,
       valid_o => Q_valid_out,
       tag_o   => Q_tag_out,
