@@ -32,7 +32,7 @@ use std.textio.all;
 entity fixed_dds_tb is
 end entity fixed_dds_tb;
 
-architecture arch of fixed_dds_tb is
+architecture testbench of fixed_dds_tb is
 
   -- constants
   constant clk_freq : natural := 117429390;
@@ -49,28 +49,8 @@ architecture arch of fixed_dds_tb is
   signal tag : std_logic_vector(c_tag_width-1 downto 0);
   signal sin : std_logic_vector(c_output_width-1 downto 0);
   signal cos : std_logic_vector(c_output_width-1 downto 0);
-  signal valid_check : std_logic := '0';
+  signal fixed_dds_valid : std_logic := '0';
   signal cos_checked, sin_checked : boolean := false;
-
-  -- components declaration
-  component fixed_dds is
-    generic (
-      g_output_width      : natural := 16;
-      g_number_of_points  : natural := 203;
-      g_tag_width         : natural := 1
-    );
-    port (
-      clk_i               : in  std_logic;
-      ce_i                : in  std_logic;
-      rst_i               : in  std_logic;
-      valid_i             : in  std_logic;
-      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
-      sin_o               : out std_logic_vector(g_output_width-1 downto 0);
-      cos_o               : out std_logic_vector(g_output_width-1 downto 0);
-      valid_o             : out std_logic;
-      tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
-    );
-  end component fixed_dds;
 
   -- procedures
   procedure f_gen_clk(constant freq : in    natural;
@@ -102,16 +82,35 @@ architecture arch of fixed_dds_tb is
       end loop;
   end procedure f_wait_clocked_signal;
 
+  -- components declaration
+  component fixed_dds is
+    generic (
+      g_output_width      : natural := 16;
+      g_number_of_points  : natural := 203;
+      g_tag_width         : natural := 1
+    );
+    port (
+      clk_i               : in  std_logic;
+      ce_i                : in  std_logic;
+      rst_i               : in  std_logic;
+      valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
+      sin_o               : out std_logic_vector(g_output_width-1 downto 0);
+      cos_o               : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o             : out std_logic;
+      tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
+    );
+  end component fixed_dds;
+
+
 begin
 
   f_gen_clk(clk_freq, clk);
 
-  -- main process
-  process
+  -- process to drive fixed_dds
+  drive_fixed_dds: process
   begin
-    report "resetting cores"
-    severity note;
-
+    -- resetting cores
     rst <= '1';
     f_wait_cycles(clk, 10);
 
@@ -131,7 +130,7 @@ begin
     tag <= (others => '0');
     f_wait_cycles(clk, 1);
     wait;
-  end process;
+  end process drive_fixed_dds;
 
   -- process to check fixed_dds generated cos
   check_cos: process
@@ -144,7 +143,7 @@ begin
     loop
       f_wait_clocked_signal(ce, clk, '1');
 
-      if valid_check = '1' then
+      if fixed_dds_valid = '1' then
         if not endfile(fin) then
           readline(fin, lin);
           hread(lin, expec_cos);
@@ -178,7 +177,7 @@ begin
     loop
       f_wait_clocked_signal(ce, clk, '1');
 
-      if valid_check = '1' then
+      if fixed_dds_valid = '1' then
         if not endfile(fin) then
           readline(fin, lin);
           hread(lin, expec_sin);
@@ -228,8 +227,8 @@ begin
       tag_i               => tag,
       sin_o               => sin,
       cos_o               => cos,
-      valid_o             => valid_check,
+      valid_o             => fixed_dds_valid,
       tag_o               => open
   );
 
-end architecture arch;
+end architecture testbench;
