@@ -559,10 +559,11 @@ begin
       cmp_mixer : mixer
         generic map (
           g_number_of_points => g_dds_points,
-          g_input_width      => g_input_width,
           g_dds_width        => g_dds_width,
-          g_tag_width        => c_adc_tag_width,
-          g_output_width     => g_mixed_width)
+          g_input_width      => g_input_width,
+          g_output_width     => g_mixed_width,
+          g_tag_width        => c_adc_tag_width
+        )
         port map (
           rst_i              => rst_i,
           clk_i              => clk_i,
@@ -570,11 +571,12 @@ begin
           signal_i           => adc_amp_scaled(chan),
           valid_i            => adc_amp_valid(chan),
           tag_i              => adc_amp_tag(chan),
-          I_out              => full_i(chan),
-          I_tag_out          => full_i_tag(chan),
-          Q_out              => full_q(chan),
-          Q_tag_out          => full_q_tag(chan),
-          valid_o            => iq_valid(chan));
+          i_o                => full_i(chan),
+          q_o                => full_q(chan),
+          valid_o            => iq_valid(chan),
+          i_tag_o            => full_i_tag(chan),
+          q_tag_o            => full_q_tag(chan)
+        );
 
       cmp_tbt_cic : cic_dual
         generic map (

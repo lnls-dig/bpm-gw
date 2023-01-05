@@ -1,0 +1,4 @@
+mixer_tb
+mixer_tb.ghw
+*.o
+*.cf

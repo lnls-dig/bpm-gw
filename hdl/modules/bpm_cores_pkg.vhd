@@ -129,24 +129,26 @@ package bpm_cores_pkg is
 
   component mixer is
     generic (
-      g_number_of_points : natural := 6;
-      g_input_width      : natural := 16;
-      g_dds_width        : natural := 16;
-      g_output_width     : natural := 32;
-      g_tag_width        : natural := 1;
-      g_mult_levels      : natural := 7);
+      g_number_of_points  : natural := 6;
+      g_dds_width         : natural := 16;
+      g_input_width       : natural := 16;
+      g_output_width      : natural := 32;
+      g_tag_width         : natural := 1;
+      g_mult_levels       : natural := 7
+    );
     port (
-      rst_i       : in  std_logic;
-      clk_i       : in  std_logic;
-      ce_i        : in  std_logic;
-      signal_i    : in  std_logic_vector(g_input_width-1 downto 0);
-      valid_i     : in  std_logic;
-      tag_i       : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
-      I_out       : out std_logic_vector(g_output_width-1 downto 0);
-      I_tag_out   : out std_logic_vector(g_tag_width-1 downto 0);
-      Q_out       : out std_logic_vector(g_output_width-1 downto 0);
-      Q_tag_out   : out std_logic_vector(g_tag_width-1 downto 0);
-      valid_o     : out std_logic);
+      rst_i               : in  std_logic;
+      clk_i               : in  std_logic;
+      ce_i                : in  std_logic;
+      signal_i            : in  std_logic_vector(g_input_width-1 downto 0);
+      valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
+      i_o                 : out std_logic_vector(g_output_width-1 downto 0);
+      q_o                 : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o             : out std_logic;
+      i_tag_o             : out std_logic_vector(g_tag_width-1 downto 0);
+      q_tag_o             : out std_logic_vector(g_tag_width-1 downto 0)
+    );
   end component mixer;
 
   component input_conditioner is
