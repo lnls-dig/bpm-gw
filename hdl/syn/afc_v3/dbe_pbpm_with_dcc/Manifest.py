@@ -15,7 +15,9 @@ syn_properties = [
     ["steps.synth_design.args.assert", "1"],
     ["steps.opt_design.args.verbose", "1"],
     ["steps.opt_design.is_enabled", "1"],
-    ["steps.write_bitstream.args.verbose", "1"]]
+    ["steps.write_bitstream.args.verbose", "1"],
+    ["steps.write_bitstream.args.bin_file", "true",  "get_runs impl_1"]
+]
 
 board = "afc"
 
