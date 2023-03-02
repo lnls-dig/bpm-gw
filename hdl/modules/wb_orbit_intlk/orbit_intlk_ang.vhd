@@ -290,7 +290,7 @@ begin
   -- x_ang = x_ds - x_us / distance_between_bpms OR
   -- x_ang * distance_between_bpms = x_ds - x_us
   --
-  -- y_ang = y_us - y_ds / distance_between_bpms OR
+  -- y_ang = y_ds - y_us / distance_between_bpms OR
   -- y_ang * distance_between_bpms = y_ds - y_us
   -------------------------------------------------------------------------
   gen_ang_intlk : for i in 0 to c_INTLK_GEN_UPTO_CHANNEL generate
