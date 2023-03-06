@@ -1206,8 +1206,8 @@ architecture rtl of dbe_bpm_gen is
   signal clk_fp2_clk1_n                      : std_logic;
   signal clk_200mhz                          : std_logic;
   signal clk_200mhz_rstn                     : std_logic;
-  signal clk_300mhz                          : std_logic;
-  signal clk_300mhz_rstn                     : std_logic;
+  signal clk_user2                           : std_logic;
+  signal clk_user2_rstn                      : std_logic;
   signal clk_master                          : std_logic;
   signal clk_master_rstn                     : std_logic;
   signal clk_pcie                            : std_logic;
@@ -1643,10 +1643,9 @@ begin
       g_AFC_SI57x_INIT_RFREQ_VALUE             => c_AFC_SI57x_INIT_RFREQ_VALUE,
       g_AFC_SI57x_INIT_N1_VALUE                => c_AFC_SI57x_INIT_N1_VALUE,
       g_AFC_SI57x_INIT_HS_VALUE                => c_AFC_SI57x_INIT_HS_VALUE,
-      --  If true, instantiate a VIC/UART/DIAG/SPI.
+      --  If true, instantiate a VIC/UART/SPI.
       g_WITH_VIC                               => true,
       g_WITH_UART_MASTER                       => true,
-      g_WITH_DIAG                              => true,
       g_WITH_TRIGGER                           => true,
       g_WITH_SPI                               => false,
       g_WITH_AFC_SI57x                         => true,
@@ -1809,8 +1808,8 @@ begin
       clk_pcie_o                               => clk_pcie,
       rst_pcie_n_o                             => clk_pcie_rstn,
 
-      clk_300mhz_o                             => clk_300mhz,
-      rst_300mhz_n_o                           => clk_300mhz_rstn,
+      clk_user2_o                              => clk_user2,
+      rst_user2_n_o                            => clk_user2_rstn,
 
       clk_trig_ref_o                           => clk_trig_ref,
       rst_trig_ref_n_o                         => clk_trig_ref_rstn,
@@ -2773,8 +2772,8 @@ begin
       -- External ports
       -----------------------------
 
-      adc_fast_spi_clk_i                      => clk_300mhz,
-      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+      adc_fast_spi_clk_i                      => clk_user2,
+      adc_fast_spi_rstn_i                     => clk_user2_rstn,
 
       -- Control signals
       adc_start_i                             => '1',
@@ -2874,8 +2873,8 @@ begin
       -- External ports
       -----------------------------
 
-      adc_fast_spi_clk_i                      => clk_300mhz,
-      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+      adc_fast_spi_clk_i                      => clk_user2,
+      adc_fast_spi_rstn_i                     => clk_user2_rstn,
 
       -- Control signals
       adc_start_i                             => '1',
