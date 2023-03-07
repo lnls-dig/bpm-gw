@@ -4911,39 +4911,39 @@ begin
     -- Downstream ADC and position signals
     -----------------------------
 
-    fs_clk_ds_i                                => fs1_clk,
+    fs_clk_ds_i                                => fs2_clk,
 
-    adc_ds_ch0_swap_i                          => dsp1_adc_se_ch0_data,
-    adc_ds_ch1_swap_i                          => dsp1_adc_se_ch1_data,
-    adc_ds_ch2_swap_i                          => dsp1_adc_se_ch2_data,
-    adc_ds_ch3_swap_i                          => dsp1_adc_se_ch3_data,
-    adc_ds_tag_i                               => dsp1_adc_tag,
-    adc_ds_swap_valid_i                        => dsp1_adc_valid,
+    adc_ds_ch0_swap_i                          => dsp2_adc_se_ch0_data,
+    adc_ds_ch1_swap_i                          => dsp2_adc_se_ch1_data,
+    adc_ds_ch2_swap_i                          => dsp2_adc_se_ch2_data,
+    adc_ds_ch3_swap_i                          => dsp2_adc_se_ch3_data,
+    adc_ds_tag_i                               => dsp2_adc_tag,
+    adc_ds_swap_valid_i                        => dsp2_adc_valid,
 
-    decim_ds_pos_x_i                           => dsp1_monit1_pos_x,
-    decim_ds_pos_y_i                           => dsp1_monit1_pos_y,
-    decim_ds_pos_q_i                           => dsp1_monit1_pos_q,
-    decim_ds_pos_sum_i                         => dsp1_monit1_pos_sum,
-    decim_ds_pos_valid_i                       => dsp1_monit1_pos_valid,
+    decim_ds_pos_x_i                           => dsp2_monit1_pos_x,
+    decim_ds_pos_y_i                           => dsp2_monit1_pos_y,
+    decim_ds_pos_q_i                           => dsp2_monit1_pos_q,
+    decim_ds_pos_sum_i                         => dsp2_monit1_pos_sum,
+    decim_ds_pos_valid_i                       => dsp2_monit1_pos_valid,
 
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
 
-    fs_clk_us_i                                => fs2_clk,
+    fs_clk_us_i                                => fs1_clk,
 
-    adc_us_ch0_swap_i                          => dsp2_adc_se_ch0_data,
-    adc_us_ch1_swap_i                          => dsp2_adc_se_ch1_data,
-    adc_us_ch2_swap_i                          => dsp2_adc_se_ch2_data,
-    adc_us_ch3_swap_i                          => dsp2_adc_se_ch3_data,
-    adc_us_tag_i                               => dsp2_adc_tag,
-    adc_us_swap_valid_i                        => dsp2_adc_valid,
+    adc_us_ch0_swap_i                          => dsp1_adc_se_ch0_data,
+    adc_us_ch1_swap_i                          => dsp1_adc_se_ch1_data,
+    adc_us_ch2_swap_i                          => dsp1_adc_se_ch2_data,
+    adc_us_ch3_swap_i                          => dsp1_adc_se_ch3_data,
+    adc_us_tag_i                               => dsp1_adc_tag,
+    adc_us_swap_valid_i                        => dsp1_adc_valid,
 
-    decim_us_pos_x_i                           => dsp2_monit1_pos_x,
-    decim_us_pos_y_i                           => dsp2_monit1_pos_y,
-    decim_us_pos_q_i                           => dsp2_monit1_pos_q,
-    decim_us_pos_sum_i                         => dsp2_monit1_pos_sum,
-    decim_us_pos_valid_i                       => dsp2_monit1_pos_valid,
+    decim_us_pos_x_i                           => dsp1_monit1_pos_x,
+    decim_us_pos_y_i                           => dsp1_monit1_pos_y,
+    decim_us_pos_q_i                           => dsp1_monit1_pos_q,
+    decim_us_pos_sum_i                         => dsp1_monit1_pos_sum,
+    decim_us_pos_valid_i                       => dsp1_monit1_pos_valid,
 
     -----------------------------
     -- Interlock outputs
