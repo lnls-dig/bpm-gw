@@ -45,6 +45,10 @@
 <span style="margin-left: 20px; ">3.9. <A href="#sect_3_9">Minimum translation Y threshold</a></span><br/>
 <span style="margin-left: 20px; ">3.10. <A href="#sect_3_10">Minimum angular X threshold</a></span><br/>
 <span style="margin-left: 20px; ">3.11. <A href="#sect_3_11">Minimum angular Y threshold</a></span><br/>
+<span style="margin-left: 20px; ">3.12. <A href="#sect_3_12">Calculated X translation (DS+US)/2</a></span><br/>
+<span style="margin-left: 20px; ">3.13. <A href="#sect_3_13">Calculated Y translation (DS+US)/2</a></span><br/>
+<span style="margin-left: 20px; ">3.14. <A href="#sect_3_14">Calculated X angular difference (DS-US)</a></span><br/>
+<span style="margin-left: 20px; ">3.15. <A href="#sect_3_15">Calculated Y angular difference (DS-US)</a></span><br/>
 <h3><a name="sect_1_0">1. Memory map summary</a></h3>
 <table cellpadding=0 cellspacing=0 border=0>
 <tr>
@@ -249,6 +253,74 @@ orbit_intlk_ang_min_y
 </td>
 <td  class="td_code">
 ANG_MIN_Y
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0xb
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#TRANS_X_DIFF">Calculated X translation (DS+US)/2</a>
+</td>
+<td  class="td_code">
+orbit_intlk_trans_x_diff
+</td>
+<td  class="td_code">
+TRANS_X_DIFF
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0xc
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#TRANS_Y_DIFF">Calculated Y translation (DS+US)/2</a>
+</td>
+<td  class="td_code">
+orbit_intlk_trans_y_diff
+</td>
+<td  class="td_code">
+TRANS_Y_DIFF
+</td>
+</tr>
+<tr class="tr_even">
+<td  class="td_code">
+0xd
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#ANG_X_DIFF">Calculated X angular difference (DS-US)</a>
+</td>
+<td  class="td_code">
+orbit_intlk_ang_x_diff
+</td>
+<td  class="td_code">
+ANG_X_DIFF
+</td>
+</tr>
+<tr class="tr_odd">
+<td  class="td_code">
+0xe
+</td>
+<td >
+REG
+</td>
+<td >
+<A href="#ANG_Y_DIFF">Calculated Y angular difference (DS-US)</a>
+</td>
+<td  class="td_code">
+orbit_intlk_ang_y_diff
+</td>
+<td  class="td_code">
+ANG_Y_DIFF
 </td>
 </tr>
 </table>
@@ -1426,6 +1498,210 @@ orbit_intlk_ang_min_y_o[31:0]
 </td>
 <td  class="td_arrow_right">
 &rArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Calculated X translation (DS+US)/2:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+orbit_intlk_trans_x_diff_i[31:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Calculated Y translation (DS+US)/2:</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+orbit_intlk_trans_y_diff_i[31:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Calculated X angular difference (DS-US):</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+orbit_intlk_ang_x_diff_i[31:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+&nbsp;
+</td>
+<td  class="td_pblock_right">
+
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+<b>Calculated Y angular difference (DS-US):</b>
+</td>
+<td  class="td_arrow_right">
+
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+orbit_intlk_ang_y_diff_i[31:0]
+</td>
+<td  class="td_arrow_right">
+&lArr;
 </td>
 </tr>
 </table>
@@ -4449,6 +4725,1050 @@ ANG_MIN_Y[7:0]
 ANG_MIN_Y
 </b>[<i>read/write</i>]: Minimum Y Threshold
 <br>Minimum Y Threshold
+</ul>
+<a name="TRANS_X_DIFF"></a>
+<h3><a name="sect_3_12">3.12. Calculated X translation (DS+US)/2</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+orbit_intlk_trans_x_diff
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0xb
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+TRANS_X_DIFF
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x2c
+</td>
+</tr>
+</table>
+<p>
+Calculated X translation (DS+US)/2
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_X_DIFF[31:24]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_X_DIFF[23:16]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_X_DIFF[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_X_DIFF[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+TRANS_X_DIFF
+</b>[<i>read-only</i>]: X translation difference
+<br>X translation difference
+</ul>
+<a name="TRANS_Y_DIFF"></a>
+<h3><a name="sect_3_13">3.13. Calculated Y translation (DS+US)/2</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+orbit_intlk_trans_y_diff
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0xc
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+TRANS_Y_DIFF
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x30
+</td>
+</tr>
+</table>
+<p>
+Calculated Y translation (DS+US)/2
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_Y_DIFF[31:24]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_Y_DIFF[23:16]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_Y_DIFF[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+TRANS_Y_DIFF[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+TRANS_Y_DIFF
+</b>[<i>read-only</i>]: Y translation difference
+<br>Y translation difference
+</ul>
+<a name="ANG_X_DIFF"></a>
+<h3><a name="sect_3_14">3.14. Calculated X angular difference (DS-US)</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+orbit_intlk_ang_x_diff
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0xd
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+ANG_X_DIFF
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x34
+</td>
+</tr>
+</table>
+<p>
+Calculated X angular difference (DS-US)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_X_DIFF[31:24]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_X_DIFF[23:16]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_X_DIFF[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_X_DIFF[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+ANG_X_DIFF
+</b>[<i>read-only</i>]: X angular difference
+<br>X angular difference
+</ul>
+<a name="ANG_Y_DIFF"></a>
+<h3><a name="sect_3_15">3.15. Calculated Y angular difference (DS-US)</a></h3>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td >
+<b>HW prefix: </b>
+</td>
+<td  class="td_code">
+orbit_intlk_ang_y_diff
+</td>
+</tr>
+<tr>
+<td >
+<b>HW address: </b>
+</td>
+<td  class="td_code">
+0xe
+</td>
+</tr>
+<tr>
+<td >
+<b>C prefix: </b>
+</td>
+<td  class="td_code">
+ANG_Y_DIFF
+</td>
+</tr>
+<tr>
+<td >
+<b>C offset: </b>
+</td>
+<td  class="td_code">
+0x38
+</td>
+</tr>
+</table>
+<p>
+Calculated Y angular difference (DS-US)
+</p>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+31
+</td>
+<td  class="td_bit">
+30
+</td>
+<td  class="td_bit">
+29
+</td>
+<td  class="td_bit">
+28
+</td>
+<td  class="td_bit">
+27
+</td>
+<td  class="td_bit">
+26
+</td>
+<td  class="td_bit">
+25
+</td>
+<td  class="td_bit">
+24
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_Y_DIFF[31:24]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+23
+</td>
+<td  class="td_bit">
+22
+</td>
+<td  class="td_bit">
+21
+</td>
+<td  class="td_bit">
+20
+</td>
+<td  class="td_bit">
+19
+</td>
+<td  class="td_bit">
+18
+</td>
+<td  class="td_bit">
+17
+</td>
+<td  class="td_bit">
+16
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_Y_DIFF[23:16]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+15
+</td>
+<td  class="td_bit">
+14
+</td>
+<td  class="td_bit">
+13
+</td>
+<td  class="td_bit">
+12
+</td>
+<td  class="td_bit">
+11
+</td>
+<td  class="td_bit">
+10
+</td>
+<td  class="td_bit">
+9
+</td>
+<td  class="td_bit">
+8
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_Y_DIFF[15:8]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<table cellpadding=0 cellspacing=0 border=0>
+<tr>
+<td  class="td_bit">
+7
+</td>
+<td  class="td_bit">
+6
+</td>
+<td  class="td_bit">
+5
+</td>
+<td  class="td_bit">
+4
+</td>
+<td  class="td_bit">
+3
+</td>
+<td  class="td_bit">
+2
+</td>
+<td  class="td_bit">
+1
+</td>
+<td  class="td_bit">
+0
+</td>
+</tr>
+<tr>
+<td style="border: solid 1px black;" colspan=8  class="td_field">
+ANG_Y_DIFF[7:0]
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+<td >
+
+</td>
+</tr>
+</table>
+<ul>
+<li><b>
+ANG_Y_DIFF
+</b>[<i>read-only</i>]: Y angular difference
+<br>Y angular difference
 </ul>
 
 

@@ -50,8 +50,6 @@ generic
   -- mixer
   g_dds_width                               : natural := 16;
   g_dds_points                              : natural := 35;
-  g_sin_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-  g_cos_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
   -- CIC setup
   g_tbt_cic_delay                           : natural := 1;
@@ -96,7 +94,11 @@ generic
 
   -- Swap/de-swap setup
   g_delay_vec_width                         : natural := 8;
-  g_swap_div_freq_vec_width                 : natural := 16
+  g_swap_div_freq_vec_width                 : natural := 16;
+
+  -- width of adc gains
+  g_adc_gain_width                          : natural  := 25
+
 );
 port
 (
@@ -291,8 +293,6 @@ begin
     -- mixer
     g_dds_width                              => g_dds_width,
     g_dds_points                             => g_dds_points,
-    g_sin_file                               => g_sin_file,
-    g_cos_file                               => g_cos_file,
 
     -- CIC setup
     g_tbt_cic_delay                          => g_tbt_cic_delay,
@@ -331,6 +331,8 @@ begin
 
     --width for IQ output
     g_IQ_width                               => g_IQ_width,
+
+    g_adc_gain_width                         => g_adc_gain_width,
 
     -- Swap/de-swap setup
     g_delay_vec_width                        => g_delay_vec_width,

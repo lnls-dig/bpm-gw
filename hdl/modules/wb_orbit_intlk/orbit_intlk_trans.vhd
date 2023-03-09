@@ -101,6 +101,9 @@ port
 
   intlk_trans_bigger_any_o                   : out std_logic;
 
+  intlk_trans_x_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+  intlk_trans_y_diff_o                       : out std_logic_vector(g_DECIM_WIDTH-1 downto 0);
+
   -- only cleared when intlk_trans_clr_i is asserted
   intlk_trans_bigger_ltc_o                   : out std_logic;
   -- conditional to intlk_trans_en_i
@@ -182,13 +185,11 @@ architecture rtl of orbit_intlk_trans is
   signal trans_bigger_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_bigger_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_bigger_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal trans_smaller             : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_smaller_comb        : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_smaller_valid       : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_smaller_reg         : t_bit_array(c_NUM_CHANNELS-1 downto 0);
-  signal trans_smaller_valid_reg   : t_bit_array(c_NUM_CHANNELS-1 downto 0);
 
   signal trans_intlk_det_bigger_all  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
   signal trans_intlk_bigger_ltc_all  : t_bit_array(c_NUM_CHANNELS-1 downto 0);
@@ -365,13 +366,11 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          trans_bigger_valid_reg(i) <= '0';
+          trans_bigger_reg(i) <= '0';
         else
           if trans_bigger_valid(i) = '1' then
             trans_bigger_reg(i) <= trans_bigger(i);
           end if;
-
-          trans_bigger_valid_reg(i) <= trans_bigger_valid(i);
         end if;
       end if;
     end process;
@@ -412,13 +411,11 @@ begin
     begin
       if rising_edge(fs_clk_i) then
         if fs_rst_n_i = '0' then
-          trans_smaller_valid_reg(i) <= '0';
+          trans_smaller_reg(i) <= '0';
         else
           if trans_smaller_valid(i) = '1' then
             trans_smaller_reg(i) <= trans_smaller(i);
           end if;
-
-          trans_smaller_valid_reg(i) <= trans_smaller_valid(i);
         end if;
       end if;
     end process;
@@ -427,8 +424,8 @@ begin
     -- Latch interlocks
     ----------------------------------
 
-    trans_intlk_det_bigger_all(i) <= trans_bigger_reg(i) and trans_bigger_valid_reg(i);
-    trans_intlk_det_smaller_all(i) <= trans_smaller_reg(i) and trans_smaller_valid_reg(i);
+    trans_intlk_det_bigger_all(i) <= trans_bigger_reg(i);
+    trans_intlk_det_smaller_all(i) <= trans_smaller_reg(i);
 
     -- latch all interlocks
     p_latch : process(fs_clk_i)
@@ -483,6 +480,9 @@ begin
 
   intlk_trans_smaller_x_o    <= trans_intlk_smaller_all(c_CHAN_X_IDX);
   intlk_trans_smaller_y_o    <= trans_intlk_smaller_all(c_CHAN_Y_IDX);
+
+  intlk_trans_x_diff_o   <= trans(c_CHAN_X_IDX);
+  intlk_trans_y_diff_o   <= trans(c_CHAN_Y_IDX);
 
   ----------------------------------
   -- Translation interlock merging

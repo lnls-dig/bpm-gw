@@ -6,17 +6,20 @@
 -- Author     : aylons  <aylons@LNLS190>
 -- Company    :
 -- Created    : 2014-05-28
--- Last update: 2015-11-25
+-- Last update: 2023-01-11
 -- Platform   :
--- Standard   : VHDL'93/02
+-- Standard   : VHDL 2008
 -------------------------------------------------------------------------------
 -- Description: Testes the position calc module
 -------------------------------------------------------------------------------
 -- Copyright (c) 2014
 -------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author  Description
--- 2014-05-28  1.0      aylons  Created
+-- Date        Version  Author   Description
+-- 2014-05-28  1.0      aylons   Created
+-- 2023-01-11  1.1      augusto  Fix ksum, kx and ky width. Use std.env.finish
+--                               to end the simulation instead of a failure
+--                               report.
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -77,14 +80,14 @@ architecture test of position_tb is
   constant c_monit2_ratio      : natural := natural(floor(sqrt(real(machine_pkg.c_pos_calc_monit2_ratio))));  -- ratio between monit 1 and 2
   constant c_monit2_cic_ratio  : positive := machine_pkg.c_pos_calc_monit2_cic_ratio;
 
-  constant c_ksum : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e7, 24));
+  constant c_ksum : std_logic_vector(c_k_width-1 downto 0) :=
+    std_logic_vector(to_unsigned(1e7, c_k_width));
 
-  constant c_kx : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e7, 24));
+  constant c_kx : std_logic_vector(c_k_width downto 0) :=
+    std_logic_vector(to_unsigned(1e7, c_k_width));
 
-  constant c_ky : std_logic_vector(23 downto 0) :=
-    std_logic_vector(to_unsigned(1e7, 24));
+  constant c_ky : std_logic_vector(c_k_width downto 0) :=
+    std_logic_vector(to_unsigned(1e7, c_k_width));
 
 
   signal clock     : std_logic := '0';
@@ -390,7 +393,8 @@ begin
                      signed(d_fofb_out));
 
         else
-          assert (false) report "Input file finished." severity failure;
+          report "Input file finished." severity note;
+          std.env.finish;
         end if;
       end if;
 

@@ -28,8 +28,6 @@ package bpm_cores_pkg is
       g_mixed_width      : natural := 24;
       g_output_width     : natural := 32;
       g_phase_width      : natural := 8;
-      g_sin_file         : string  := "./dds_sin.nif";
-      g_cos_file         : string  := "./dds_cos.nif";
       g_number_of_points : natural := 6;
       g_diff_delay       : natural := 2;
       g_stages           : natural := 3;
@@ -75,31 +73,36 @@ package bpm_cores_pkg is
 
   component fixed_dds is
     generic (
-      g_number_of_points : natural := 203;
-      g_output_width     : natural := 16;
-      g_sin_file         : string  := "./dds_sin.ram";
-      g_cos_file         : string  := "./dds_cos.ram");
+      g_output_width      : natural := 16;
+      g_number_of_points  : natural := 203;
+      g_tag_width         : natural := 1
+    );
     port (
-      clk_i   : in  std_logic;
-      ce_i    : in  std_logic;
-      rst_i   : in  std_logic;
-      valid_i : in  std_logic;
-      sin_o   : out std_logic_vector(g_output_width-1 downto 0);
-      cos_o   : out std_logic_vector(g_output_width-1 downto 0);
-      valid_o : out std_logic);
+      clk_i               : in  std_logic;
+      ce_i                : in  std_logic;
+      rst_i               : in  std_logic;
+      valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
+      sin_o               : out std_logic_vector(g_output_width-1 downto 0);
+      cos_o               : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o             : out std_logic;
+      tag_o               : out std_logic_vector(g_tag_width-1 downto 0)
+    );
   end component fixed_dds;
 
   component lut_sweep is
     generic (
       g_number_of_points : natural := 203;
-      g_bus_size         : natural := 16);
+      g_bus_size         : natural := 16
+    );
     port (
-      rst_i     : in  std_logic;
-      clk_i     : in  std_logic;
-      ce_i      : in  std_logic;
-      valid_i   : in  std_logic;
-      address_o : out std_logic_vector(g_bus_size-1 downto 0);
-      valid_o   : out std_logic);
+      clk_i             : in  std_logic;
+      ce_i              : in  std_logic;
+      rst_i             : in  std_logic;
+      valid_i           : in  std_logic;
+      address_o         : out std_logic_vector(g_bus_size-1 downto 0);
+      valid_o           : out std_logic
+    );
   end component lut_sweep;
 
   component dds_sin_lut
@@ -126,26 +129,26 @@ package bpm_cores_pkg is
 
   component mixer is
     generic (
-      g_sin_file         : string;
-      g_cos_file         : string;
-      g_number_of_points : natural := 6;
-      g_input_width      : natural := 16;
-      g_dds_width        : natural := 16;
-      g_output_width     : natural := 32;
-      g_tag_width        : natural := 1;
-      g_mult_levels      : natural := 7);
+      g_number_of_points  : natural := 6;
+      g_dds_width         : natural := 16;
+      g_input_width       : natural := 16;
+      g_output_width      : natural := 32;
+      g_tag_width         : natural := 1;
+      g_mult_levels       : natural := 7
+    );
     port (
-      rst_i       : in  std_logic;
-      clk_i       : in  std_logic;
-      ce_i        : in  std_logic;
-      signal_i    : in  std_logic_vector(g_input_width-1 downto 0);
-      valid_i     : in  std_logic;
-      tag_i       : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
-      I_out       : out std_logic_vector(g_output_width-1 downto 0);
-      I_tag_out   : out std_logic_vector(g_tag_width-1 downto 0);
-      Q_out       : out std_logic_vector(g_output_width-1 downto 0);
-      Q_tag_out   : out std_logic_vector(g_tag_width-1 downto 0);
-      valid_o     : out std_logic);
+      rst_i               : in  std_logic;
+      clk_i               : in  std_logic;
+      ce_i                : in  std_logic;
+      signal_i            : in  std_logic_vector(g_input_width-1 downto 0);
+      valid_i             : in  std_logic;
+      tag_i               : in  std_logic_vector(g_tag_width-1 downto 0) := (others => '0');
+      i_o                 : out std_logic_vector(g_output_width-1 downto 0);
+      q_o                 : out std_logic_vector(g_output_width-1 downto 0);
+      valid_o             : out std_logic;
+      i_tag_o             : out std_logic_vector(g_tag_width-1 downto 0);
+      q_tag_o             : out std_logic_vector(g_tag_width-1 downto 0)
+    );
   end component mixer;
 
   component input_conditioner is
@@ -195,8 +198,6 @@ package bpm_cores_pkg is
       g_adc_ratio                : natural  := 1;
       g_dds_width                : natural  := 16;
       g_dds_points               : natural  := 35;
-      g_sin_file                 : string   := "../../../dsp-cores/hdl/modules/position_calc/dds_sin.nif";
-      g_cos_file                 : string   := "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif";
       g_tbt_tag_desync_cnt_width : natural := 14;
       g_tbt_cic_mask_samples_width : natural := 16;
       g_tbt_cic_delay            : natural  := 1;
@@ -230,7 +231,8 @@ package bpm_cores_pkg is
       g_fofb_cordic_ratio        : positive := 4;
       g_k_width                  : natural  := 25;
       g_offset_width             : natural  := 32;
-      g_IQ_width                 : natural  := 32);
+      g_IQ_width                 : natural  := 32;
+      g_adc_gain_width           : natural  := 25);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
       adc_ch1_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -244,6 +246,14 @@ package bpm_cores_pkg is
       ksum_i             : in  std_logic_vector(g_k_width-1 downto 0);
       kx_i               : in  std_logic_vector(g_k_width-1 downto 0);
       ky_i               : in  std_logic_vector(g_k_width-1 downto 0);
+      adc_ch0_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch1_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch2_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch3_swclk_0_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch0_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch1_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch2_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch3_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
       offset_x_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       offset_y_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
@@ -609,8 +619,6 @@ package bpm_cores_pkg is
         -- mixer
         g_dds_width  : natural := 16;
         g_dds_points : natural := 35;
-        g_sin_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-        g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
         -- CIC setup
         g_tbt_cic_delay   : natural := 1;
@@ -655,7 +663,10 @@ package bpm_cores_pkg is
 
         -- Swap/de-swap setup
         g_delay_vec_width         : natural := 8;
-        g_swap_div_freq_vec_width : natural := 16
+        g_swap_div_freq_vec_width : natural := 16;
+
+        -- width of adc gains
+        g_adc_gain_width          : natural  := 25
         );
     port
       (
@@ -854,8 +865,6 @@ package bpm_cores_pkg is
         -- mixer
         g_dds_width  : natural := 16;
         g_dds_points : natural := 35;
-        g_sin_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-        g_cos_file   : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
         -- CIC setup
         g_tbt_cic_delay   : natural := 1;
@@ -900,7 +909,10 @@ package bpm_cores_pkg is
 
         -- Swap/de-swap setup
         g_delay_vec_width         : natural := 8;
-        g_swap_div_freq_vec_width : natural := 16
+        g_swap_div_freq_vec_width : natural := 16;
+
+        -- width of adc gains
+        g_adc_gain_width          : natural  := 25
         );
     port
       (

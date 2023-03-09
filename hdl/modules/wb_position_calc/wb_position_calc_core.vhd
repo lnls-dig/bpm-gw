@@ -12,8 +12,9 @@
 -- Licensed under GNU Lesser General Public License (LGPL) v3.0
 -------------------------------------------------------------------------------
 -- Revisions  :
--- Date        Version  Author          Description
+-- Date        Version  Author             Description
 -- 2013-07-02  1.0      lucas.russo        Created
+-- 2022-11-11  1.1      guilherme.ricioli  Add ADC scaling stage
 -------------------------------------------------------------------------------
 
 library ieee;
@@ -51,8 +52,6 @@ generic
   -- mixer
   g_dds_width                               : natural := 16;
   g_dds_points                              : natural := 35;
-  g_sin_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_sin.nif";
-  g_cos_file                                : string  := "../../../dsp-cores/hdl/modules/position_nosysgen/dds_cos.nif";
 
   -- CIC setup
   g_tbt_cic_delay                           : natural := 1;
@@ -97,7 +96,10 @@ generic
 
   -- Swap/de-swap setup
   g_delay_vec_width                         : natural := 8;
-  g_swap_div_freq_vec_width                 : natural := 16
+  g_swap_div_freq_vec_width                 : natural := 16;
+
+  -- width of adc gains
+  g_adc_gain_width                          : natural := 25
 );
 port
 (
@@ -343,6 +345,10 @@ architecture rtl of wb_position_calc_core is
   constant c_k_width                        : natural := g_k_width;
   constant c_offset_width                   : natural := g_offset_width;
 
+  -- Wishbone ADC gains fixed-point position
+  constant c_adc_gains_fixed_point_pos      : std_logic_vector(31 downto 0) :=
+      std_logic_vector(to_unsigned(31, 32));
+
   constant c_cnt_width_raw                  : natural := g_adc_ratio;
   constant c_cnt_width_mix                  : natural := g_IQ_width;
   constant c_cnt_width_processed            : natural := g_tbt_decim_width;
@@ -535,6 +541,15 @@ architecture rtl of wb_position_calc_core is
   signal regs_monit_data_mask_samples_end_o  : std_logic_vector(15 downto 0);
   signal regs_pos_calc_offset_x_o            : std_logic_vector(31 downto 0);
   signal regs_pos_calc_offset_y_o            : std_logic_vector(31 downto 0);
+  signal regs_adc_gains_fixed_point_pos_data_i : std_logic_vector(31 downto 0);
+  signal regs_adc_ch0_swclk_0_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch1_swclk_0_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch2_swclk_0_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch3_swclk_0_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch0_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch1_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch2_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch3_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
 
   -----------------------------
   -- Wishbone crossbar signals
@@ -986,7 +1001,16 @@ architecture rtl of wb_position_calc_core is
       pos_calc_monit_data_mask_samples_beg_o  : out   std_logic_vector(15 downto 0);
       pos_calc_monit_data_mask_samples_end_o  : out   std_logic_vector(15 downto 0);
       pos_calc_offset_x_o                     : out   std_logic_vector(31 downto 0);
-      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0)
+      pos_calc_offset_y_o                     : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_gains_fixed_point_pos_data_i : in    std_logic_vector(31 downto 0);
+      pos_calc_adc_ch0_swclk_0_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch1_swclk_0_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch2_swclk_0_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch3_swclk_0_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch0_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch1_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch2_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch3_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0)
   );
   end component wb_pos_calc_regs;
 
@@ -1251,7 +1275,16 @@ begin
     pos_calc_monit_data_mask_samples_beg_o  => regs_monit_data_mask_samples_beg_o,
     pos_calc_monit_data_mask_samples_end_o  => regs_monit_data_mask_samples_end_o,
     pos_calc_offset_x_o                     => regs_pos_calc_offset_x_o,
-    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o
+    pos_calc_offset_y_o                     => regs_pos_calc_offset_y_o,
+    pos_calc_adc_gains_fixed_point_pos_data_i => regs_adc_gains_fixed_point_pos_data_i,
+    pos_calc_adc_ch0_swclk_0_gain_data_o      => regs_adc_ch0_swclk_0_gain_data_o,
+    pos_calc_adc_ch1_swclk_0_gain_data_o      => regs_adc_ch1_swclk_0_gain_data_o,
+    pos_calc_adc_ch2_swclk_0_gain_data_o      => regs_adc_ch2_swclk_0_gain_data_o,
+    pos_calc_adc_ch3_swclk_0_gain_data_o      => regs_adc_ch3_swclk_0_gain_data_o,
+    pos_calc_adc_ch0_swclk_1_gain_data_o      => regs_adc_ch0_swclk_1_gain_data_o,
+    pos_calc_adc_ch1_swclk_1_gain_data_o      => regs_adc_ch1_swclk_1_gain_data_o,
+    pos_calc_adc_ch2_swclk_1_gain_data_o      => regs_adc_ch2_swclk_1_gain_data_o,
+    pos_calc_adc_ch3_swclk_1_gain_data_o      => regs_adc_ch3_swclk_1_gain_data_o
   );
 
   -- Unused wishbone signals
@@ -1277,6 +1310,7 @@ begin
   regs_dds_poff_ch1_reserved_i              <= (others => '0');
   regs_dds_poff_ch2_reserved_i              <= (others => '0');
   regs_dds_poff_ch3_reserved_i              <= (others => '0');
+  regs_adc_gains_fixed_point_pos_data_i     <= c_adc_gains_fixed_point_pos;
 
   --------------------------------------------------------------------------------
   -- This is the old interface for acquiring data from Monit. It goes like this:
@@ -1668,8 +1702,6 @@ begin
     -- mixer
     g_dds_width                             => g_dds_width,
     g_dds_points                            => g_dds_points,
-    g_sin_file                              => g_sin_file,
-    g_cos_file                              => g_cos_file,
 
     g_tbt_tag_desync_cnt_width              => c_tbt_tag_desync_cnt_width,
     g_tbt_cic_mask_samples_width            => c_tbt_cic_mask_samples_width,
@@ -1722,7 +1754,10 @@ begin
     g_offset_width                          => c_offset_width,
 
     --width for IQ output
-    g_IQ_width                              => g_IQ_width
+    g_IQ_width                              => g_IQ_width,
+
+    -- width of adc gains
+    g_adc_gain_width                        => g_adc_gain_width
   )
   port map
   (
@@ -1740,6 +1775,16 @@ begin
     ksum_i                                  => regs_ksum_val_o(c_k_width-1 downto 0),
     kx_i                                    => regs_kx_val_o(c_k_width-1 downto 0),
     ky_i                                    => regs_ky_val_o(c_k_width-1 downto 0),
+
+    -- Wishbone fixed-point numbers are aligned to the left
+    adc_ch0_swclk_0_gain_i                  => regs_adc_ch0_swclk_0_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch1_swclk_0_gain_i                  => regs_adc_ch1_swclk_0_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch2_swclk_0_gain_i                  => regs_adc_ch2_swclk_0_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch3_swclk_0_gain_i                  => regs_adc_ch3_swclk_0_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch0_swclk_1_gain_i                  => regs_adc_ch0_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch1_swclk_1_gain_i                  => regs_adc_ch1_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch2_swclk_1_gain_i                  => regs_adc_ch2_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
+    adc_ch3_swclk_1_gain_i                  => regs_adc_ch3_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
 
     offset_x_i                              => regs_pos_calc_offset_x_o(c_offset_width-1 downto 0),
     offset_y_i                              => regs_pos_calc_offset_y_o(c_offset_width-1 downto 0),

@@ -2020,3 +2020,182 @@ memory-map:
         field_description: BPM Y position offset
         field_comment: |
           BPM Y position offset to be subtracted from calculated positions
+# ---------------------------------------------
+# ------------  ADC Gain Registers ------------
+# ---------------------------------------------
+  - reg:
+      name: adc_gains_fixed_point_pos
+      address: 0x0000011c
+      width: 32
+      access: rw
+      description: ADC gains fixed-point position constant
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: fixed-point position constant value
+          x-wbgen:
+            type: SLV
+            access_dev: WRITE_ONLY
+            access_bus: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch0_swclk_0_gain
+      address: 0x00000120
+      width: 32
+      access: rw
+      description: ADC channel 0 gain on RFFE switch state 0 (inverted)
+      comment: |
+        ADC channel 0 gain on RFFE switch state 0 (inverted)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch1_swclk_0_gain
+      address: 0x00000124
+      width: 32
+      access: rw
+      description: ADC channel 1 gain on RFFE switch state 0 (inverted)
+      comment: |
+        ADC channel 1 gain on RFFE switch state 0 (inverted)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch2_swclk_0_gain
+      address: 0x00000128
+      width: 32
+      access: rw
+      description: ADC channel 2 gain on RFFE switch state 0 (inverted)
+      comment: |
+        ADC channel 2 gain on RFFE switch state 0 (inverted)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch3_swclk_0_gain
+      address: 0x0000012c
+      width: 32
+      access: rw
+      description: ADC channel 3 gain on RFFE switch state 0 (inverted)
+      comment: |
+        ADC channel 3 gain on RFFE switch state 0 (inverted)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch0_swclk_1_gain
+      address: 0x00000130
+      width: 32
+      access: rw
+      description: ADC channel 0 gain on RFFE switch state 1 (direct)
+      comment: |
+        ADC channel 0 gain on RFFE switch state 1 (direct)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch1_swclk_1_gain
+      address: 0x00000134
+      width: 32
+      access: rw
+      description: ADC channel 1 gain on RFFE switch state 1 (direct)
+      comment: |
+        ADC channel 1 gain on RFFE switch state 1 (direct)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch2_swclk_1_gain
+      address: 0x00000138
+      width: 32
+      access: rw
+      description: ADC channel 2 gain on RFFE switch state 1 (direct)
+      comment: |
+        ADC channel 2 gain on RFFE switch state 1 (direct)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i
+  - reg:
+      name: adc_ch3_swclk_1_gain
+      address: 0x0000013c
+      width: 32
+      access: rw
+      description: ADC channel 3 gain on RFFE switch state 1 (direct)
+      comment: |
+        ADC channel 3 gain on RFFE switch state 1 (direct)
+      children:
+      - field:
+          name: data
+          range: 31-0
+          description: gain
+          comment: |
+            SFIX32_31.
+          x-wbgen:
+            type: SLV
+            access_bus: READ_WRITE
+            access_dev: READ_ONLY
+            clock: fs_clk2x_i

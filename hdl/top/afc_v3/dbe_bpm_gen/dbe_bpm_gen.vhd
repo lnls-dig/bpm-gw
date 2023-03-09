@@ -1206,8 +1206,8 @@ architecture rtl of dbe_bpm_gen is
   signal clk_fp2_clk1_n                      : std_logic;
   signal clk_200mhz                          : std_logic;
   signal clk_200mhz_rstn                     : std_logic;
-  signal clk_300mhz                          : std_logic;
-  signal clk_300mhz_rstn                     : std_logic;
+  signal clk_user2                           : std_logic;
+  signal clk_user2_rstn                      : std_logic;
   signal clk_master                          : std_logic;
   signal clk_master_rstn                     : std_logic;
   signal clk_pcie                            : std_logic;
@@ -1643,10 +1643,9 @@ begin
       g_AFC_SI57x_INIT_RFREQ_VALUE             => c_AFC_SI57x_INIT_RFREQ_VALUE,
       g_AFC_SI57x_INIT_N1_VALUE                => c_AFC_SI57x_INIT_N1_VALUE,
       g_AFC_SI57x_INIT_HS_VALUE                => c_AFC_SI57x_INIT_HS_VALUE,
-      --  If true, instantiate a VIC/UART/DIAG/SPI.
+      --  If true, instantiate a VIC/UART/SPI.
       g_WITH_VIC                               => true,
       g_WITH_UART_MASTER                       => true,
-      g_WITH_DIAG                              => true,
       g_WITH_TRIGGER                           => true,
       g_WITH_SPI                               => false,
       g_WITH_AFC_SI57x                         => true,
@@ -1809,8 +1808,8 @@ begin
       clk_pcie_o                               => clk_pcie,
       rst_pcie_n_o                             => clk_pcie_rstn,
 
-      clk_300mhz_o                             => clk_300mhz,
-      rst_300mhz_n_o                           => clk_300mhz_rstn,
+      clk_user2_o                              => clk_user2,
+      rst_user2_n_o                            => clk_user2_rstn,
 
       clk_trig_ref_o                           => clk_trig_ref,
       rst_trig_ref_n_o                         => clk_trig_ref_rstn,
@@ -2773,8 +2772,8 @@ begin
       -- External ports
       -----------------------------
 
-      adc_fast_spi_clk_i                      => clk_300mhz,
-      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+      adc_fast_spi_clk_i                      => clk_user2,
+      adc_fast_spi_rstn_i                     => clk_user2_rstn,
 
       -- Control signals
       adc_start_i                             => '1',
@@ -2874,8 +2873,8 @@ begin
       -- External ports
       -----------------------------
 
-      adc_fast_spi_clk_i                      => clk_300mhz,
-      adc_fast_spi_rstn_i                     => clk_300mhz_rstn,
+      adc_fast_spi_clk_i                      => clk_user2,
+      adc_fast_spi_rstn_i                     => clk_user2_rstn,
 
       -- Control signals
       adc_start_i                             => '1',
@@ -2977,8 +2976,6 @@ begin
     -- mixer
     g_dds_width                             => c_pos_calc_dds_width,
     g_dds_points                            => c_pos_calc_dds_points,
-    g_sin_file                              => c_pos_calc_sin_file,
-    g_cos_file                              => c_pos_calc_cos_file,
 
     -- CIC setup
     g_tbt_cic_delay                         => c_pos_calc_tbt_cic_delay,
@@ -3020,6 +3017,9 @@ begin
 
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
+
+    -- width of adc gains
+    g_adc_gain_width                        => c_pos_calc_adc_gain_width,
 
     -- Swap/de-swap setup
     g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,
@@ -3205,8 +3205,6 @@ begin
     -- mixer
     g_dds_width                             => c_pos_calc_dds_width,
     g_dds_points                            => c_pos_calc_dds_points,
-    g_sin_file                              => c_pos_calc_sin_file,
-    g_cos_file                              => c_pos_calc_cos_file,
 
     -- CIC setup
     g_tbt_cic_delay                         => c_pos_calc_tbt_cic_delay,
@@ -3248,6 +3246,9 @@ begin
 
     --width for IQ output
     g_IQ_width                              => c_pos_calc_IQ_width,
+
+    -- width of adc gains
+    g_adc_gain_width                        => c_pos_calc_adc_gain_width,
 
     -- Swap/de-swap setup
     g_delay_vec_width                       => c_POS_CALC_DELAY_VEC_WIDTH,
@@ -4910,39 +4911,39 @@ begin
     -- Downstream ADC and position signals
     -----------------------------
 
-    fs_clk_ds_i                                => fs1_clk,
+    fs_clk_ds_i                                => fs2_clk,
 
-    adc_ds_ch0_swap_i                          => dsp1_adc_se_ch0_data,
-    adc_ds_ch1_swap_i                          => dsp1_adc_se_ch1_data,
-    adc_ds_ch2_swap_i                          => dsp1_adc_se_ch2_data,
-    adc_ds_ch3_swap_i                          => dsp1_adc_se_ch3_data,
-    adc_ds_tag_i                               => dsp1_adc_tag,
-    adc_ds_swap_valid_i                        => dsp1_adc_valid,
+    adc_ds_ch0_swap_i                          => dsp2_adc_se_ch0_data,
+    adc_ds_ch1_swap_i                          => dsp2_adc_se_ch1_data,
+    adc_ds_ch2_swap_i                          => dsp2_adc_se_ch2_data,
+    adc_ds_ch3_swap_i                          => dsp2_adc_se_ch3_data,
+    adc_ds_tag_i                               => dsp2_adc_tag,
+    adc_ds_swap_valid_i                        => dsp2_adc_valid,
 
-    decim_ds_pos_x_i                           => dsp1_monit1_pos_x,
-    decim_ds_pos_y_i                           => dsp1_monit1_pos_y,
-    decim_ds_pos_q_i                           => dsp1_monit1_pos_q,
-    decim_ds_pos_sum_i                         => dsp1_monit1_pos_sum,
-    decim_ds_pos_valid_i                       => dsp1_monit1_pos_valid,
+    decim_ds_pos_x_i                           => dsp2_monit1_pos_x,
+    decim_ds_pos_y_i                           => dsp2_monit1_pos_y,
+    decim_ds_pos_q_i                           => dsp2_monit1_pos_q,
+    decim_ds_pos_sum_i                         => dsp2_monit1_pos_sum,
+    decim_ds_pos_valid_i                       => dsp2_monit1_pos_valid,
 
     -----------------------------
     -- Upstream ADC and position signals
     -----------------------------
 
-    fs_clk_us_i                                => fs2_clk,
+    fs_clk_us_i                                => fs1_clk,
 
-    adc_us_ch0_swap_i                          => dsp2_adc_se_ch0_data,
-    adc_us_ch1_swap_i                          => dsp2_adc_se_ch1_data,
-    adc_us_ch2_swap_i                          => dsp2_adc_se_ch2_data,
-    adc_us_ch3_swap_i                          => dsp2_adc_se_ch3_data,
-    adc_us_tag_i                               => dsp2_adc_tag,
-    adc_us_swap_valid_i                        => dsp2_adc_valid,
+    adc_us_ch0_swap_i                          => dsp1_adc_se_ch0_data,
+    adc_us_ch1_swap_i                          => dsp1_adc_se_ch1_data,
+    adc_us_ch2_swap_i                          => dsp1_adc_se_ch2_data,
+    adc_us_ch3_swap_i                          => dsp1_adc_se_ch3_data,
+    adc_us_tag_i                               => dsp1_adc_tag,
+    adc_us_swap_valid_i                        => dsp1_adc_valid,
 
-    decim_us_pos_x_i                           => dsp2_monit1_pos_x,
-    decim_us_pos_y_i                           => dsp2_monit1_pos_y,
-    decim_us_pos_q_i                           => dsp2_monit1_pos_q,
-    decim_us_pos_sum_i                         => dsp2_monit1_pos_sum,
-    decim_us_pos_valid_i                       => dsp2_monit1_pos_valid,
+    decim_us_pos_x_i                           => dsp1_monit1_pos_x,
+    decim_us_pos_y_i                           => dsp1_monit1_pos_y,
+    decim_us_pos_q_i                           => dsp1_monit1_pos_q,
+    decim_us_pos_sum_i                         => dsp1_monit1_pos_sum,
+    decim_us_pos_valid_i                       => dsp1_monit1_pos_valid,
 
     -----------------------------
     -- Interlock outputs

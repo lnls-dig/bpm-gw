@@ -63,17 +63,17 @@ package machine_pkg is
 
   constant c_pos_calc_fofb_cic_delay            : natural := 1;
   constant c_pos_calc_fofb_cic_stages           : natural := 1;
-  constant c_pos_calc_fofb_ratio                : natural := 8688;
+  constant c_pos_calc_fofb_ratio                : natural := 4344;
   constant c_pos_calc_fofb_decim_width          : natural := 32;
 
   constant c_pos_calc_monit1_cic_delay          : natural := 1;
   constant c_pos_calc_monit1_cic_stages         : natural := 1;
-  constant c_pos_calc_monit1_ratio              : natural := 25;  --ratio between fofb and monit 1
+  constant c_pos_calc_monit1_ratio              : natural := 16;  --ratio between fofb and monit 1
   constant c_pos_calc_monit1_cic_ratio          : natural := 8;
 
   constant c_pos_calc_monit2_cic_delay          : natural := 1;
   constant c_pos_calc_monit2_cic_stages         : natural := 1;
-  constant c_pos_calc_monit2_ratio              : natural := 100; -- ratio between monit 1 and 2
+  constant c_pos_calc_monit2_ratio              : natural := 300; -- ratio between monit 1 and 2
   constant c_pos_calc_monit2_cic_ratio          : natural := 8;
 
   constant c_pos_calc_monit_decim_width         : natural := 32;
@@ -89,6 +89,8 @@ package machine_pkg is
   constant c_pos_calc_k_width                   : natural := 25;
   constant c_pos_calc_offset_width              : natural := 32;
   constant c_pos_calc_IQ_width                  : natural := c_pos_calc_mixed_width;
+
+  constant c_pos_calc_adc_gain_width            : natural := 25;
 
   constant c_pos_calc_k_sum                     : natural := 85e5;
   constant c_pos_calc_k_x                       : natural := 85e5;

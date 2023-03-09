@@ -1,9 +1,12 @@
-action = "simulation"
-target = "xilinx"
-syn_device = "xc6vlx240t"
-sim_tool = "modelsim"
-top_module = "dds_bench"
+files = [
+    "fixed_dds_tb.vhd",
+]
 
-modules = {"local" : ["../../", "../../modules/fixed_dds/","../../sim/test_pkg/"]}
-
-files = ["dds_bench.vhd"]
+modules = {
+    "local" : [
+        "../../modules",
+        "../../ip_cores/general-cores",
+        "../../ip_cores/dsp-cores",
+        "../../sim/test_pkg"
+    ]
+}
