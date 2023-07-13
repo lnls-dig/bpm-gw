@@ -98,7 +98,7 @@ DLY
 &rarr;
 </td>
 <td  class="td_pblock_left">
-rst_n_i
+wb_adr_i
 </td>
 <td  class="td_sym_center">
 
@@ -112,10 +112,10 @@ rst_n_i
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rarr;
+&rArr;
 </td>
 <td  class="td_pblock_left">
-clk_sys_i
+wb_dat_i[31:0]
 </td>
 <td  class="td_sym_center">
 
@@ -129,10 +129,10 @@ bpm_swap_ctrl_rst_o
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rarr;
+&lArr;
 </td>
 <td  class="td_pblock_left">
-wb_adr_i
+wb_dat_o[31:0]
 </td>
 <td  class="td_sym_center">
 
@@ -146,10 +146,10 @@ bpm_swap_ctrl_mode_o[1:0]
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rArr;
+&rarr;
 </td>
 <td  class="td_pblock_left">
-wb_dat_i[31:0]
+wb_cyc_i
 </td>
 <td  class="td_sym_center">
 
@@ -163,10 +163,27 @@ bpm_swap_ctrl_reserved_i[1:0]
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&lArr;
+&rArr;
 </td>
 <td  class="td_pblock_left">
-wb_dat_o[31:0]
+wb_sel_i[3:0]
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+bpm_swap_ctrl_swap_div_f_cnt_en_o
+</td>
+<td  class="td_arrow_right">
+&rarr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+&rarr;
+</td>
+<td  class="td_pblock_left">
+wb_stb_i
 </td>
 <td  class="td_sym_center">
 
@@ -183,7 +200,7 @@ bpm_swap_ctrl_swap_div_f_o[15:0]
 &rarr;
 </td>
 <td  class="td_pblock_left">
-wb_cyc_i
+wb_we_i
 </td>
 <td  class="td_sym_center">
 &nbsp;
@@ -197,10 +214,10 @@ wb_cyc_i
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rArr;
+&larr;
 </td>
 <td  class="td_pblock_left">
-wb_sel_i[3:0]
+wb_ack_o
 </td>
 <td  class="td_sym_center">
 
@@ -214,10 +231,10 @@ wb_sel_i[3:0]
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rarr;
+&larr;
 </td>
 <td  class="td_pblock_left">
-wb_stb_i
+wb_err_o
 </td>
 <td  class="td_sym_center">
 
@@ -231,10 +248,10 @@ bpm_swap_dly_deswap_o[15:0]
 </tr>
 <tr>
 <td  class="td_arrow_left">
-&rarr;
+&larr;
 </td>
 <td  class="td_pblock_left">
-wb_we_i
+wb_rty_o
 </td>
 <td  class="td_sym_center">
 
@@ -244,23 +261,6 @@ bpm_swap_dly_reserved_i[15:0]
 </td>
 <td  class="td_arrow_right">
 &lArr;
-</td>
-</tr>
-<tr>
-<td  class="td_arrow_left">
-&larr;
-</td>
-<td  class="td_pblock_left">
-wb_ack_o
-</td>
-<td  class="td_sym_center">
-
-</td>
-<td  class="td_pblock_right">
-
-</td>
-<td  class="td_arrow_right">
-
 </td>
 </tr>
 <tr>
@@ -518,8 +518,8 @@ SWAP_DIV_F[7:0]
 <td  class="td_unused">
 -
 </td>
-<td  class="td_unused">
--
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+SWAP_DIV_F_CNT_EN
 </td>
 <td style="border: solid 1px black;" colspan=2  class="td_field">
 RESERVED[1:0]
@@ -551,6 +551,10 @@ MODE
 RESERVED
 </b>[<i>read-only</i>]: Reserved
 <br>Ignore on write, read as 0's
+<li><b>
+SWAP_DIV_F_CNT_EN
+</b>[<i>read/write</i>]: Enable Swap Phase Syncing
+<br>Enables swap phase syncing
 <li><b>
 SWAP_DIV_F
 </b>[<i>read/write</i>]: Swap Divisor
