@@ -53,6 +53,7 @@ entity bpm_swap is
 
     -- Swap frequency settings
     swap_div_f_i      : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+    swap_div_f_cnt_en_i : in  std_logic := '1';
 
     -- De-swap delay setting
     deswap_delay_i    : in  std_logic_vector(g_delay_vec_width-1 downto 0)
@@ -123,6 +124,7 @@ begin
     rst_n_i            =>  rst_n_i,
     sync_trig_i        =>  sync_trig_i,
     swap_mode_i        =>  swap_mode_i,
+    swap_div_f_cnt_en_i => swap_div_f_cnt_en_i,
     swap_div_f_i       =>  swap_div_f_i,
     deswap_delay_i     =>  deswap_delay_i,
     swap_o             =>  swap,
