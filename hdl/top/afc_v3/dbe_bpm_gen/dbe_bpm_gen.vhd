@@ -3160,6 +3160,11 @@ begin
     sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
 
     -----------------------------
+    -- Trigger for resetting counters (all rates)
+    -----------------------------
+    sync_counters_i                         => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_DUMMY0_ID).pulse,
+
+    -----------------------------
     -- Debug signals
     -----------------------------
 
@@ -3387,6 +3392,11 @@ begin
     -----------------------------
 
     sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
+
+    -----------------------------
+    -- Trigger for resetting counters (all rates)
+    -----------------------------
+    sync_counters_i                         => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_DUMMY0_ID).pulse,
 
     -----------------------------
     -- Debug signals

@@ -835,6 +835,11 @@ package bpm_cores_pkg is
         sync_trig_slow_i  : in std_logic;
 
         -----------------------------
+        -- Trigger for resetting counters (all rates)
+        -----------------------------
+        sync_counters_i   : in std_logic;
+
+        -----------------------------
         -- Debug signals
         -----------------------------
 
@@ -1071,6 +1076,11 @@ package bpm_cores_pkg is
         -----------------------------
 
         sync_trig_slow_i  : in std_logic;
+
+        -----------------------------
+        -- Trigger for resetting counters (all rates)
+        -----------------------------
+        sync_counters_i   : in std_logic;
 
         -----------------------------
         -- Debug signals
