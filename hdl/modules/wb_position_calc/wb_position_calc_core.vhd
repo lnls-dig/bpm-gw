@@ -268,6 +268,11 @@ port
   sync_trig_slow_i                          : in std_logic;
 
   -----------------------------
+  -- Trigger for resetting counters (all rates)
+  -----------------------------
+  sync_counters_i                           : in std_logic;
+
+  -----------------------------
   -- Debug signals
   -----------------------------
 
@@ -1932,7 +1937,7 @@ begin
   )
   port map
   (
-    rst_n_i                                 => fs_rst_n_i,
+    rst_n_i                                 => fs_rst_n_i and not sync_counters_i,
     clk_i                                   => fs_clk_i,
 
     ---------------------------------
@@ -1958,22 +1963,22 @@ begin
     c_counters_monit_amp_idx   => monit_amp_ce,
     c_counters_monit_pos_idx   => monit_pos_ce);
 
-  -- Don't wait on the actual valid from the DSP rates.
-  -- Just assume every test word is valid, which it is.
+  -- Increment counters on CICs' valids.
+  -- This is useful for checking CICs syncing.
   cnt_up_array                              <= (
-    c_counters_mix_idx        => '1',
-    c_counters_tbt_decim_idx  => '1',
-    c_counters_tbt_amp_idx    => '1',
-    c_counters_tbt_pha_idx    => '1',
-    c_counters_tbt_pos_idx    => '1',
-    c_counters_fofb_decim_idx => '1',
-    c_counters_fofb_amp_idx   => '1',
-    c_counters_fofb_pha_idx   => '1',
-    c_counters_fofb_pos_idx   => '1',
-    c_counters_monit1_amp_idx => '1',
-    c_counters_monit1_pos_idx => '1',
-    c_counters_monit_amp_idx  => '1',
-    c_counters_monit_pos_idx  => '1');
+    c_counters_mix_idx        => mix_valid,
+    c_counters_tbt_decim_idx  => tbt_decim_valid,
+    c_counters_tbt_amp_idx    => tbt_amp_valid,
+    c_counters_tbt_pha_idx    => tbt_pha_valid,
+    c_counters_tbt_pos_idx    => tbt_pos_valid,
+    c_counters_fofb_decim_idx => fofb_decim_valid,
+    c_counters_fofb_amp_idx   => fofb_amp_valid,
+    c_counters_fofb_pha_idx   => fofb_pha_valid,
+    c_counters_fofb_pos_idx   => fofb_pos_valid,
+    c_counters_monit1_amp_idx => monit1_amp_valid,
+    c_counters_monit1_pos_idx => monit1_pos_valid,
+    c_counters_monit_amp_idx  => monit_amp_valid,
+    c_counters_monit_pos_idx  => monit_pos_valid);
 
   --------------------------------------------------------------------------
   --    CDC position data (Amplitudes and Position) to fs_clk domain      --
