@@ -4235,7 +4235,7 @@ begin
   -- MONIT1 AMP 1 data
   --------------------
   acq_chan_array(c_acq_core_0_id, c_acq_monit1_amp_id).val(to_integer(c_facq_channels(c_acq_monit1_amp_id).width)-1 downto 0) <=
-                                                                 std_logic_vector(resize(signed(dsp1_monit1_amp_ch3), 32)) &
+                                                                  (127 downto 97 => '0') & intlk &
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch2), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp1_monit1_amp_ch0), 32));
@@ -4444,10 +4444,11 @@ begin
   -- MONIT1 AMP 2 data
   --------------------
   acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).val(to_integer(c_facq_channels(c_acq_monit1_amp_id).width)-1 downto 0) <=
-                                                                 std_logic_vector(resize(signed(dsp2_monit1_amp_ch3), 32)) &
+                                                                  (127 downto 97 => '0') & intlk &
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch2), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch1), 32)) &
                                                                   std_logic_vector(resize(signed(dsp2_monit1_amp_ch0), 32));
+                                                                  -- NOTE: We're crossing domains here, but it's still consistent with line 4990
   acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).dvalid  <= dsp2_monit1_amp_valid;
   acq_chan_array(c_acq_core_1_id, c_acq_monit1_amp_id).trig    <= trig_pulse_rcv(c_TRIG_MUX_1_ID, c_acq_monit1_amp_id).pulse;
 
@@ -4986,7 +4987,7 @@ begin
 
   -- Interlock
   trig_1_channel_intlk.pulse <= intlk;
-  trig_2_channel_intlk.pulse <= intlk;
+  trig_2_channel_intlk.pulse <= intlk;  -- NOTE: Domain crossing here
 
   trig_1_pm_channel_intlk.pulse <= '0';
   trig_2_pm_channel_intlk.pulse <= '0';
