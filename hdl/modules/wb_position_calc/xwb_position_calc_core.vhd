@@ -257,6 +257,7 @@ port
   -----------------------------
 
   sync_trig_slow_i                          : in std_logic;
+  sync_counters_i                           : in std_logic;
 
   -----------------------------
   -- Debug signals
@@ -502,6 +503,11 @@ begin
     -----------------------------
 
     sync_trig_slow_i                        => sync_trig_slow_i,
+
+    -----------------------------
+    -- Trigger for resetting counters (all rates)
+    -----------------------------
+    sync_counters_i                         => sync_counters_i,
 
     -----------------------------
     -- Debug signals

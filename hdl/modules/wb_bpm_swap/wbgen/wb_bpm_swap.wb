@@ -13,6 +13,7 @@
 -- Revisions  :
 -- Date        Version  Author                Description
 -- 2013-04-10  1.0      jose.berkenbrock      Created
+-- 2023-07-13  1.1      guilherme.ricioli     Add swap_div_f_cnt_en field
 -------------------------------------------------------------------------------
 
 peripheral {
@@ -57,6 +58,15 @@ peripheral {
        size = 2;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
+    };
+
+    field {
+       name = "Enable Swap Phase Syncing";
+       description = "Enables swap phase syncing";
+       prefix = "swap_div_f_cnt_en";
+       type = BIT;
+       access_bus = READ_WRITE;
+       access_dev = READ_ONLY;
     };
 
     field {

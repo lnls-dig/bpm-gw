@@ -478,6 +478,7 @@ package bpm_cores_pkg is
 
       -- Swap frequency settings
       swap_div_f_i      : in  std_logic_vector(g_swap_div_freq_vec_width-1 downto 0);
+      swap_div_f_cnt_en_i : in  std_logic := '1';
 
       -- De-swap delay setting
       deswap_delay_i    : in  std_logic_vector(g_delay_vec_width-1 downto 0)
@@ -835,6 +836,11 @@ package bpm_cores_pkg is
         sync_trig_slow_i  : in std_logic;
 
         -----------------------------
+        -- Trigger for resetting counters (all rates)
+        -----------------------------
+        sync_counters_i   : in std_logic;
+
+        -----------------------------
         -- Debug signals
         -----------------------------
 
@@ -1071,6 +1077,11 @@ package bpm_cores_pkg is
         -----------------------------
 
         sync_trig_slow_i  : in std_logic;
+
+        -----------------------------
+        -- Trigger for resetting counters (all rates)
+        -----------------------------
+        sync_counters_i   : in std_logic;
 
         -----------------------------
         -- Debug signals

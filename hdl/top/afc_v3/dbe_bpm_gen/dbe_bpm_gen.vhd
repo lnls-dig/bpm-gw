@@ -3160,6 +3160,11 @@ begin
     sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
 
     -----------------------------
+    -- Trigger for resetting counters (all rates)
+    -----------------------------
+    sync_counters_i                         => trig_pulse_rcv(c_TRIG_MUX_0_ID, c_DUMMY0_ID).pulse,
+
+    -----------------------------
     -- Debug signals
     -----------------------------
 
@@ -3387,6 +3392,11 @@ begin
     -----------------------------
 
     sync_trig_slow_i                        => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_PHASE_SYNC_TRIGGER_SLOW_ID).pulse,
+
+    -----------------------------
+    -- Trigger for resetting counters (all rates)
+    -----------------------------
+    sync_counters_i                         => trig_pulse_rcv(c_TRIG_MUX_1_ID, c_DUMMY0_ID).pulse,
 
     -----------------------------
     -- Debug signals
@@ -3819,7 +3829,7 @@ begin
 
       -- Read clock
       rd_clk_i                                  => fs_ref_clk,
-      rd_rst_n_i                                => fs_ref_rstn,
+      rd_rst_n_i                                => dsp_fofb_pos_rstn,
 
       rd_data_o                                 => dsp1_fofb_pos_xy_out_fifo_slv,
       rd_valid_o                                => dsp1_fofb_pos_valid_out_fifo,
@@ -3855,7 +3865,7 @@ begin
 
       -- Read clock
       rd_clk_i                                  => fs_ref_clk,
-      rd_rst_n_i                                => fs_ref_rstn,
+      rd_rst_n_i                                => dsp_fofb_pos_rstn,
 
       rd_data_o                                 => dsp2_fofb_pos_xy_out_fifo_slv,
       rd_valid_o                                => dsp2_fofb_pos_valid_out_fifo,
