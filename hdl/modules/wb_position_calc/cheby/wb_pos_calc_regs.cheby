@@ -2027,7 +2027,7 @@ memory-map:
       name: adc_gains_fixed_point_pos
       address: 0x0000011c
       width: 32
-      access: rw
+      access: ro
       description: ADC gains fixed-point position constant
       children:
       - field:

@@ -679,7 +679,7 @@ struct pos_calc {
   /* [0x118]: REG (rw) BPM Y position offset parameter register */
   uint32_t offset_y;
 
-  /* [0x11c]: REG (rw) ADC gains fixed-point position constant */
+  /* [0x11c]: REG (ro) ADC gains fixed-point position constant */
   uint32_t adc_gains_fixed_point_pos;
 
   /* [0x120]: REG (rw) ADC channel 0 gain on RFFE switch state 0 (inverted) */
