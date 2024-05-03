@@ -70,7 +70,7 @@ package position_calc_core_pkg is
   constant c_xwb_pos_calc_core_regs_sdb : t_sdb_device := (
     abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
-    abi_ver_minor => x"00",
+    abi_ver_minor => x"01",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
     sdb_component => (
@@ -80,7 +80,7 @@ package position_calc_core_pkg is
     vendor_id     => x"1000000000001215",     -- LNLS
     device_id     => x"1bafbf1e",
     version       => x"00000001",
-    date          => x"20130703",
+    date          => x"20240604",
     name          => "LNLS_POS_CALC_REGS ")));
 
 end position_calc_core_pkg;

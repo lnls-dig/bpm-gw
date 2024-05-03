@@ -350,6 +350,9 @@ architecture rtl of wb_position_calc_core is
   constant c_k_width                        : natural := g_k_width;
   constant c_offset_width                   : natural := g_offset_width;
 
+  -- Defined by cheby/wb_pos_calc_regs.cheby
+  constant c_adc_offset_width               : natural := 16;
+
   -- Wishbone ADC gains fixed-point position
   constant c_adc_gains_fixed_point_pos      : std_logic_vector(31 downto 0) :=
       std_logic_vector(to_unsigned(31, 32));
@@ -555,6 +558,14 @@ architecture rtl of wb_position_calc_core is
   signal regs_adc_ch1_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
   signal regs_adc_ch2_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
   signal regs_adc_ch3_swclk_1_gain_data_o     : std_logic_vector(31 downto 0);
+  signal regs_adc_ch0_swclk_0_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch1_swclk_0_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch2_swclk_0_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch3_swclk_0_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch0_swclk_1_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch1_swclk_1_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch2_swclk_1_offset_data_o  :  std_logic_vector(15 downto 0);
+  signal regs_adc_ch3_swclk_1_offset_data_o  :  std_logic_vector(15 downto 0);
 
   -----------------------------
   -- Wishbone crossbar signals
@@ -1015,7 +1026,15 @@ architecture rtl of wb_position_calc_core is
       pos_calc_adc_ch0_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
       pos_calc_adc_ch1_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
       pos_calc_adc_ch2_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
-      pos_calc_adc_ch3_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0)
+      pos_calc_adc_ch3_swclk_1_gain_data_o    : out   std_logic_vector(31 downto 0);
+      pos_calc_adc_ch0_swclk_0_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch1_swclk_0_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch2_swclk_0_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch3_swclk_0_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch0_swclk_1_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch1_swclk_1_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch2_swclk_1_offset_data_o  : out   std_logic_vector(15 downto 0);
+      pos_calc_adc_ch3_swclk_1_offset_data_o  : out   std_logic_vector(15 downto 0)
   );
   end component wb_pos_calc_regs;
 
@@ -1289,7 +1308,15 @@ begin
     pos_calc_adc_ch0_swclk_1_gain_data_o      => regs_adc_ch0_swclk_1_gain_data_o,
     pos_calc_adc_ch1_swclk_1_gain_data_o      => regs_adc_ch1_swclk_1_gain_data_o,
     pos_calc_adc_ch2_swclk_1_gain_data_o      => regs_adc_ch2_swclk_1_gain_data_o,
-    pos_calc_adc_ch3_swclk_1_gain_data_o      => regs_adc_ch3_swclk_1_gain_data_o
+    pos_calc_adc_ch3_swclk_1_gain_data_o      => regs_adc_ch3_swclk_1_gain_data_o,
+    pos_calc_adc_ch0_swclk_0_offset_data_o  => regs_adc_ch0_swclk_0_offset_data_o,
+    pos_calc_adc_ch1_swclk_0_offset_data_o  => regs_adc_ch1_swclk_0_offset_data_o,
+    pos_calc_adc_ch2_swclk_0_offset_data_o  => regs_adc_ch2_swclk_0_offset_data_o,
+    pos_calc_adc_ch3_swclk_0_offset_data_o  => regs_adc_ch3_swclk_0_offset_data_o,
+    pos_calc_adc_ch0_swclk_1_offset_data_o  => regs_adc_ch0_swclk_1_offset_data_o,
+    pos_calc_adc_ch1_swclk_1_offset_data_o  => regs_adc_ch1_swclk_1_offset_data_o,
+    pos_calc_adc_ch2_swclk_1_offset_data_o  => regs_adc_ch2_swclk_1_offset_data_o,
+    pos_calc_adc_ch3_swclk_1_offset_data_o  => regs_adc_ch3_swclk_1_offset_data_o
   );
 
   -- Unused wishbone signals
@@ -1762,7 +1789,10 @@ begin
     g_IQ_width                              => g_IQ_width,
 
     -- width of adc gains
-    g_adc_gain_width                        => g_adc_gain_width
+    g_adc_gain_width                        => g_adc_gain_width,
+
+    -- Width of ADC offsets
+    g_adc_offset_width                      => c_adc_offset_width
   )
   port map
   (
@@ -1790,6 +1820,15 @@ begin
     adc_ch1_swclk_1_gain_i                  => regs_adc_ch1_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
     adc_ch2_swclk_1_gain_i                  => regs_adc_ch2_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
     adc_ch3_swclk_1_gain_i                  => regs_adc_ch3_swclk_1_gain_data_o(31 downto 32-g_adc_gain_width),
+
+    adc_ch0_swclk_0_offset_i                => regs_adc_ch0_swclk_0_offset_data_o,
+    adc_ch1_swclk_0_offset_i                => regs_adc_ch1_swclk_0_offset_data_o,
+    adc_ch2_swclk_0_offset_i                => regs_adc_ch2_swclk_0_offset_data_o,
+    adc_ch3_swclk_0_offset_i                => regs_adc_ch3_swclk_0_offset_data_o,
+    adc_ch0_swclk_1_offset_i                => regs_adc_ch0_swclk_1_offset_data_o,
+    adc_ch1_swclk_1_offset_i                => regs_adc_ch1_swclk_1_offset_data_o,
+    adc_ch2_swclk_1_offset_i                => regs_adc_ch2_swclk_1_offset_data_o,
+    adc_ch3_swclk_1_offset_i                => regs_adc_ch3_swclk_1_offset_data_o,
 
     offset_x_i                              => regs_pos_calc_offset_x_o(c_offset_width-1 downto 0),
     offset_y_i                              => regs_pos_calc_offset_y_o(c_offset_width-1 downto 0),
