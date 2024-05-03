@@ -107,7 +107,10 @@ entity position_calc is
     g_IQ_width : natural := 32;
 
     -- width of adc gains
-    g_adc_gain_width  : natural := 25
+    g_adc_gain_width  : natural := 25;
+
+    -- Width of ADC offsets
+    g_adc_offset_width : natural := 16
     );
 
   port(
@@ -135,6 +138,16 @@ entity position_calc is
     adc_ch1_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
     adc_ch2_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
     adc_ch3_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+
+    adc_ch0_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch1_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch2_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch3_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+
+    adc_ch0_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch1_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch2_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+    adc_ch3_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
 
     offset_x_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
     offset_y_i  : in std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
@@ -368,26 +381,30 @@ architecture rtl of position_calc is
   --Signals--
   -----------
   type t_input is array(3 downto 0) of std_logic_vector(g_input_width-1 downto 0);
-  signal adc_input : t_input := (others => (others => '0'));
   signal adc_input_d0 : t_input := (others => (others => '0'));
   signal adc_input_d1 : t_input := (others => (others => '0'));
-  signal adc_input_scaled : t_input := (others => (others => '0'));
+  signal adc_input_offs : t_input := (others => (others => '0'));
+  signal adc_input_offs_scaled : t_input := (others => (others => '0'));
 
   type t_adc_gain_arr is array(3 downto 0) of std_logic_vector(g_adc_gain_width-1 downto 0);
   signal adc_gain_arr : t_adc_gain_arr := (others => (others => '0'));
   signal adc_gain_swclk_0_arr : t_adc_gain_arr := (others => (others => '0'));
   signal adc_gain_swclk_1_arr : t_adc_gain_arr := (others => (others => '0'));
 
+  type t_adc_offset_arr is array(3 downto 0) of std_logic_vector(g_adc_offset_width-1 downto 0);
+  signal adc_offset_arr : t_adc_offset_arr := (others => (others => '0'));
+  signal adc_offset_swclk_0_arr : t_adc_offset_arr := (others => (others => '0'));
+  signal adc_offset_swclk_1_arr : t_adc_offset_arr := (others => (others => '0'));
 
   type t_input_valid is array(3 downto 0) of std_logic;
-  signal adc_input_valid : t_input_valid := (others => '0');
   signal iq_valid        : t_input_valid := (others => '0');
-  signal adc_input_scaled_valid   : t_input_valid := (others => '0');
+  signal adc_input_offs_valid : t_input_valid := (others => '0');
+  signal adc_input_offs_scaled_valid : t_input_valid := (others => '0');
   signal adc_input_valid_d1 : std_logic := '0';
 
   type t_input_tag is array(3 downto 0) of std_logic_vector(c_adc_tag_width-1 downto 0);
-  signal adc_input_tag : t_input_tag := (others => (others => '0'));
-  signal adc_input_scaled_tag : t_input_tag := (others => (others => '0'));
+  signal adc_input_offs_tag : t_input_tag := (others => (others => '0'));
+  signal adc_input_offs_scaled_tag : t_input_tag := (others => (others => '0'));
   signal adc_input_tag_d1 : std_logic_vector(c_adc_tag_width-1 downto 0) := (others => '0');
 
   signal full_i_tag : t_input_tag := (others => (others => '0'));
@@ -469,40 +486,45 @@ begin
   adc_gain_swclk_1_arr(2) <= adc_ch2_swclk_1_gain_i;
   adc_gain_swclk_1_arr(3) <= adc_ch3_swclk_1_gain_i;
 
-  -- adc gains mux (delay: 1 clock cycle)
-  -- each adc channel has two associated gains, one for each rffe switch state (adc_tag_i)
-  p_adc_gains_mux: process(clk_i)
+  adc_offset_swclk_0_arr(0) <= adc_ch0_swclk_0_offset_i;
+  adc_offset_swclk_0_arr(1) <= adc_ch1_swclk_0_offset_i;
+  adc_offset_swclk_0_arr(2) <= adc_ch2_swclk_0_offset_i;
+  adc_offset_swclk_0_arr(3) <= adc_ch3_swclk_0_offset_i;
+
+  adc_offset_swclk_1_arr(0) <= adc_ch0_swclk_1_offset_i;
+  adc_offset_swclk_1_arr(1) <= adc_ch1_swclk_1_offset_i;
+  adc_offset_swclk_1_arr(2) <= adc_ch2_swclk_1_offset_i;
+  adc_offset_swclk_1_arr(3) <= adc_ch3_swclk_1_offset_i;
+
+  -- ADCs' offset (and gain mux) stage
+  p_adc_offs_stage : process(clk_i)
   begin
     if rising_edge(clk_i) then
+      -- 1st pipeline stage: mux offset
       if adc_tag_i(0) = '0' then
+        adc_offset_arr <= adc_offset_swclk_0_arr;
+      else
+        adc_offset_arr <= adc_offset_swclk_1_arr;
+      end if;
+      adc_input_d1 <= adc_input_d0;
+      adc_input_tag_d1 <= adc_tag_i;
+      adc_input_valid_d1 <= adc_valid_i;
+
+      -- 2nd pipeline stage: apply the offset, mux gain
+      for chan in 3 downto 0 loop
+        adc_input_offs(chan) <= std_logic_vector(
+          signed(adc_input_d1(chan)) - signed(adc_offset_arr(chan)));
+      end loop;
+      adc_input_offs_tag <= (others => adc_input_tag_d1);
+      adc_input_offs_valid <= (others => adc_input_valid_d1);
+
+      if adc_input_tag_d1(0) = '0' then
         adc_gain_arr <= adc_gain_swclk_0_arr;
-      else  -- adc_tag_i(0) = '1'
+      else
         adc_gain_arr <= adc_gain_swclk_1_arr;
       end if;
     end if;
-  end process;
-
-  -- pipeline stage to level the delay of p_adc_gains_mux
-  cmp_pipeline_adc_input_valid : pipeline
-    generic map (
-      g_width   => 1,
-      g_depth   => 1)
-    port map (
-      data_i(0) => adc_valid_i,
-      clk_i     => clk_i,
-      ce_i      => '1',
-      data_o(0) => adc_input_valid_d1);
-
-  -- pipeline stage to level the delay of p_adc_gains_mux
-  cmp_pipeline_adc_input_tag : pipeline
-    generic map (
-      g_width => 1,
-      g_depth => 1)
-    port map (
-      data_i  => adc_tag_i,
-      clk_i   => clk_i,
-      ce_i    => '1',
-      data_o  => adc_input_tag_d1);
+  end process p_adc_offs_stage;
 
   -- Reset fof TBT rates sync'ed with external signal
   gen_ddc : for chan in 3 downto 0 generate
@@ -563,21 +585,6 @@ begin
         ratio_i     => c_monit2_cic_ratio_slv,
         strobe_o    => ce_monit2(chan));
 
-    -- pipeline stage to level the delay of p_adc_gains_mux
-    cmp_pipeline_adc_input : pipeline
-      generic map (
-        g_width => g_input_width,
-        g_depth => 1)
-      port map (
-        data_i  => adc_input_d0(chan),
-        clk_i   => clk_i,
-        ce_i    => '1',
-        data_o  => adc_input_d1(chan));
-
-    adc_input(chan) <= adc_input_d1(chan);
-    adc_input_tag(chan) <= adc_input_tag_d1;
-    adc_input_valid(chan) <= adc_input_valid_d1;
-
     cmp_generic_multiplier : generic_multiplier
       generic map (
         g_a_width           => g_input_width,
@@ -588,13 +595,13 @@ begin
         g_round_convergent  => 1,
         g_levels            => 1)
       port map (
-        a_i                 => adc_input(chan),
+        a_i                 => adc_input_offs(chan),
         b_i                 => adc_gain_arr(chan),
-        valid_i             => adc_input_valid(chan),
-        tag_i               => adc_input_tag(chan),
-        p_o                 => adc_input_scaled(chan),
-        valid_o             => adc_input_scaled_valid(chan),
-        tag_o               => adc_input_scaled_tag(chan),
+        valid_i             => adc_input_offs_valid(chan),
+        tag_i               => adc_input_offs_tag(chan),
+        p_o                 => adc_input_offs_scaled(chan),
+        valid_o             => adc_input_offs_scaled_valid(chan),
+        tag_o               => adc_input_offs_scaled_tag(chan),
         ce_i                => '1',
         clk_i               => clk_i,
         rst_i               => rst_i);
@@ -615,9 +622,9 @@ begin
           rst_i              => rst_i,
           clk_i              => clk_i,
           ce_i               => ce_adc(chan),
-          signal_i           => adc_input_scaled(chan),
-          valid_i            => adc_input_scaled_valid(chan),
-          tag_i              => adc_input_scaled_tag(chan),
+          signal_i           => adc_input_offs_scaled(chan),
+          valid_i            => adc_input_offs_scaled_valid(chan),
+          tag_i              => adc_input_offs_scaled_tag(chan),
           i_o                => full_i(chan),
           q_o                => full_q(chan),
           valid_o            => iq_valid(chan),
@@ -762,8 +769,8 @@ begin
           -- rate, so we don't have to
           -- change them downstream
           ce_out_i                     => ce_tbt_cordic(chan),
-          valid_i                      => adc_input_scaled_valid(chan),
-          data_i                       => adc_input_scaled(chan),
+          valid_i                      => adc_input_offs_scaled_valid(chan),
+          data_i                       => adc_input_offs_scaled(chan),
           ratio_i                      => c_tbt_ratio_slv,
           data_tag_i                   => tbt_tag_i,
           data_tag_en_i                => tbt_tag_en_i,
@@ -798,9 +805,9 @@ begin
           rst_i                         => rst_i,
           ce_i                          => ce_adc(chan),
           ce_out_i                      => ce_fofb_cordic(chan),
-          valid_i                       => adc_input_scaled_valid(chan),
-          data_i                        => adc_input_scaled(chan),
-          data_tag_i                    => adc_input_scaled_tag(chan),
+          valid_i                       => adc_input_offs_scaled_valid(chan),
+          data_i                        => adc_input_offs_scaled(chan),
+          data_tag_i                    => adc_input_offs_scaled_tag(chan),
           -- Don't use CIC synchronization feature
           data_tag_en_i                 => '0',
           data_mask_num_samples_beg_i   => (others => '0'),

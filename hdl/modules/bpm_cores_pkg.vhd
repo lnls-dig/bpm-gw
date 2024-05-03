@@ -232,7 +232,8 @@ package bpm_cores_pkg is
       g_k_width                  : natural  := 25;
       g_offset_width             : natural  := 32;
       g_IQ_width                 : natural  := 32;
-      g_adc_gain_width           : natural  := 25);
+      g_adc_gain_width           : natural  := 25;
+      g_adc_offset_width         : natural := 16);
     port (
       adc_ch0_i          : in  std_logic_vector(g_input_width-1 downto 0);
       adc_ch1_i          : in  std_logic_vector(g_input_width-1 downto 0);
@@ -254,6 +255,14 @@ package bpm_cores_pkg is
       adc_ch1_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
       adc_ch2_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
       adc_ch3_swclk_1_gain_i : in std_logic_vector(g_adc_gain_width-1 downto 0);
+      adc_ch0_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch1_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch2_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch3_swclk_0_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch0_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch1_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch2_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
+      adc_ch3_swclk_1_offset_i : in std_logic_vector(g_adc_offset_width-1 downto 0);
       offset_x_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       offset_y_i         : in  std_logic_vector(g_offset_width-1 downto 0) := (others => '0');
       mix_ch0_i_o        : out std_logic_vector(g_IQ_width-1 downto 0);
