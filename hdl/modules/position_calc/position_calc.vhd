@@ -373,10 +373,11 @@ architecture rtl of position_calc is
   signal adc_input_d1 : t_input := (others => (others => '0'));
   signal adc_input_scaled : t_input := (others => (others => '0'));
 
-  type t_input_gain is array(3 downto 0) of std_logic_vector(g_adc_gain_width-1 downto 0);
-  signal adc_input_gain : t_input_gain := (others => (others => '0'));
-  signal adc_input_swclk_0_gain : t_input_gain := (others => (others => '0'));
-  signal adc_input_swclk_1_gain : t_input_gain := (others => (others => '0'));
+  type t_adc_gain_arr is array(3 downto 0) of std_logic_vector(g_adc_gain_width-1 downto 0);
+  signal adc_gain_arr : t_adc_gain_arr := (others => (others => '0'));
+  signal adc_gain_swclk_0_arr : t_adc_gain_arr := (others => (others => '0'));
+  signal adc_gain_swclk_1_arr : t_adc_gain_arr := (others => (others => '0'));
+
 
   type t_input_valid is array(3 downto 0) of std_logic;
   signal adc_input_valid : t_input_valid := (others => '0');
@@ -458,15 +459,15 @@ begin
   adc_input_d0(2) <= adc_ch2_i;
   adc_input_d0(3) <= adc_ch3_i;
 
-  adc_input_swclk_0_gain(0) <= adc_ch0_swclk_0_gain_i;
-  adc_input_swclk_0_gain(1) <= adc_ch1_swclk_0_gain_i;
-  adc_input_swclk_0_gain(2) <= adc_ch2_swclk_0_gain_i;
-  adc_input_swclk_0_gain(3) <= adc_ch3_swclk_0_gain_i;
+  adc_gain_swclk_0_arr(0) <= adc_ch0_swclk_0_gain_i;
+  adc_gain_swclk_0_arr(1) <= adc_ch1_swclk_0_gain_i;
+  adc_gain_swclk_0_arr(2) <= adc_ch2_swclk_0_gain_i;
+  adc_gain_swclk_0_arr(3) <= adc_ch3_swclk_0_gain_i;
 
-  adc_input_swclk_1_gain(0) <= adc_ch0_swclk_1_gain_i;
-  adc_input_swclk_1_gain(1) <= adc_ch1_swclk_1_gain_i;
-  adc_input_swclk_1_gain(2) <= adc_ch2_swclk_1_gain_i;
-  adc_input_swclk_1_gain(3) <= adc_ch3_swclk_1_gain_i;
+  adc_gain_swclk_1_arr(0) <= adc_ch0_swclk_1_gain_i;
+  adc_gain_swclk_1_arr(1) <= adc_ch1_swclk_1_gain_i;
+  adc_gain_swclk_1_arr(2) <= adc_ch2_swclk_1_gain_i;
+  adc_gain_swclk_1_arr(3) <= adc_ch3_swclk_1_gain_i;
 
   -- adc gains mux (delay: 1 clock cycle)
   -- each adc channel has two associated gains, one for each rffe switch state (adc_tag_i)
@@ -474,9 +475,9 @@ begin
   begin
     if rising_edge(clk_i) then
       if adc_tag_i(0) = '0' then
-        adc_input_gain <= adc_input_swclk_0_gain;
+        adc_gain_arr <= adc_gain_swclk_0_arr;
       else  -- adc_tag_i(0) = '1'
-        adc_input_gain <= adc_input_swclk_1_gain;
+        adc_gain_arr <= adc_gain_swclk_1_arr;
       end if;
     end if;
   end process;
@@ -588,7 +589,7 @@ begin
         g_levels            => 1)
       port map (
         a_i                 => adc_input(chan),
-        b_i                 => adc_input_gain(chan),
+        b_i                 => adc_gain_arr(chan),
         valid_i             => adc_input_valid(chan),
         tag_i               => adc_input_tag(chan),
         p_o                 => adc_input_scaled(chan),
