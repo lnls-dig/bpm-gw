@@ -6,8 +6,8 @@ language = "vhdl"
 syn_device = "xc7a200t"
 syn_grade = "-2"
 syn_package = "ffg1156"
-syn_top = "dbe_pbpm"
-syn_project = "dbe_pbpm"
+syn_top = "dbe_pbpm_with_dcc"
+syn_project = "dbe_pbpm_with_dcc"
 syn_tool = "vivado"
 syn_properties = [
     ["steps.synth_design.args.more options", "-verbose"],
@@ -52,6 +52,6 @@ for f in xdc_files:
 
 modules = {
     "local" : [
-        "../../../top/afc_v3/dbe_pbpm"
+        "../../../top/afc_v3/dbe_pbpm_with_dcc"
     ]
 }
