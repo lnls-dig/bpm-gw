@@ -43,6 +43,8 @@ use ieee.numeric_std.all;
 use ieee.math_real.all;
 
 package machine_pkg is
+  -- NOTE: PBMs aren't synchronized to the Timing system, so no sampling
+  --       frequency/phase relation should be assumed between them and EBPMs.
 
   constant c_pos_calc_with_downconv             : boolean := false;
 
@@ -58,24 +60,29 @@ package machine_pkg is
   constant c_pos_calc_sin_file                  : string  := "../../../dsp-cores/hdl/modules/position_calc/dds_sin.nif";
   constant c_pos_calc_cos_file                  : string  := "../../../dsp-cores/hdl/modules/position_calc/dds_cos.nif";
 
+  -- TbT rate: 500 kHz
+  -- NOTE: This is way off EBPMs' TbT rate (~578 KHz)
   constant c_pos_calc_tbt_cic_delay             : natural := 1;
   constant c_pos_calc_tbt_cic_stages            : natural := 1;
-  constant c_pos_calc_tbt_ratio                 : natural := 2;
+  constant c_pos_calc_tbt_ratio                 : natural := 2;   -- ratio between ADC and TbT rates
   constant c_pos_calc_tbt_decim_width           : natural := 32;
 
+  -- FOFB rate: 47.619 kHz
   constant c_pos_calc_fofb_cic_delay            : natural := 1;
   constant c_pos_calc_fofb_cic_stages           : natural := 1;
-  constant c_pos_calc_fofb_ratio                : natural := 21;
+  constant c_pos_calc_fofb_ratio                : natural := 21;  -- ratio between ADC and FOFB rates
   constant c_pos_calc_fofb_decim_width          : natural := 32;
 
+  -- FAcq rate: 5.952 kHz
   constant c_pos_calc_monit1_cic_delay          : natural := 1;
   constant c_pos_calc_monit1_cic_stages         : natural := 1;
-  constant c_pos_calc_monit1_ratio              : natural := 8;  --ratio between fofb and monit 1
+  constant c_pos_calc_monit1_ratio              : natural := 8;   -- ratio between FOFB and FAcq rates
   constant c_pos_calc_monit1_cic_ratio          : natural := 8;
 
+  -- Monit rate: 10.352 Hz
   constant c_pos_calc_monit2_cic_delay          : natural := 1;
   constant c_pos_calc_monit2_cic_stages         : natural := 1;
-  constant c_pos_calc_monit2_ratio              : natural := 575; -- ratio between monit 1 and 2
+  constant c_pos_calc_monit2_ratio              : natural := 575; -- ratio between FAcq and Monit rates
   constant c_pos_calc_monit2_cic_ratio          : natural := 8;
 
   constant c_pos_calc_monit_decim_width         : natural := 32;
