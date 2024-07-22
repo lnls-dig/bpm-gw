@@ -453,42 +453,58 @@
 #define POS_CALC_ADC_CH3_SWCLK_1_GAIN_DATA_MASK 0xffffffffUL
 #define POS_CALC_ADC_CH3_SWCLK_1_GAIN_DATA_SHIFT 0
 
-/* ADC channel 0 offset on RFFE switch state 0 (inverted) */
+/* ADC channel 0 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH0_SWCLK_0_OFFSET 0x140UL
 #define POS_CALC_ADC_CH0_SWCLK_0_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH0_SWCLK_0_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 1 offset on RFFE switch state 0 (inverted) */
+/* ADC channel 1 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH1_SWCLK_0_OFFSET 0x144UL
 #define POS_CALC_ADC_CH1_SWCLK_0_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH1_SWCLK_0_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 2 offset on RFFE switch state 0 (inverted) */
+/* ADC channel 2 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH2_SWCLK_0_OFFSET 0x148UL
 #define POS_CALC_ADC_CH2_SWCLK_0_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH2_SWCLK_0_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 3 offset on RFFE switch state 0 (inverted) */
+/* ADC channel 3 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH3_SWCLK_0_OFFSET 0x14cUL
 #define POS_CALC_ADC_CH3_SWCLK_0_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH3_SWCLK_0_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 0 offset on RFFE switch state 1 (direct) */
+/* ADC channel 0 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH0_SWCLK_1_OFFSET 0x150UL
 #define POS_CALC_ADC_CH0_SWCLK_1_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH0_SWCLK_1_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 1 offset on RFFE switch state 1 (direct) */
+/* ADC channel 1 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH1_SWCLK_1_OFFSET 0x154UL
 #define POS_CALC_ADC_CH1_SWCLK_1_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH1_SWCLK_1_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 2 offset on RFFE switch state 1 (direct) */
+/* ADC channel 2 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH2_SWCLK_1_OFFSET 0x158UL
 #define POS_CALC_ADC_CH2_SWCLK_1_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH2_SWCLK_1_OFFSET_DATA_SHIFT 0
 
-/* ADC channel 3 offset on RFFE switch state 1 (direct) */
+/* ADC channel 3 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
 #define POS_CALC_ADC_CH3_SWCLK_1_OFFSET 0x15cUL
 #define POS_CALC_ADC_CH3_SWCLK_1_OFFSET_DATA_MASK 0xffffUL
 #define POS_CALC_ADC_CH3_SWCLK_1_OFFSET_DATA_SHIFT 0
@@ -747,28 +763,44 @@ struct pos_calc {
   /* [0x13c]: REG (rw) ADC channel 3 gain on RFFE switch state 1 (direct) */
   uint32_t adc_ch3_swclk_1_gain;
 
-  /* [0x140]: REG (rw) ADC channel 0 offset on RFFE switch state 0 (inverted) */
+  /* [0x140]: REG (rw) ADC channel 0 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch0_swclk_0_offset;
 
-  /* [0x144]: REG (rw) ADC channel 1 offset on RFFE switch state 0 (inverted) */
+  /* [0x144]: REG (rw) ADC channel 1 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch1_swclk_0_offset;
 
-  /* [0x148]: REG (rw) ADC channel 2 offset on RFFE switch state 0 (inverted) */
+  /* [0x148]: REG (rw) ADC channel 2 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch2_swclk_0_offset;
 
-  /* [0x14c]: REG (rw) ADC channel 3 offset on RFFE switch state 0 (inverted) */
+  /* [0x14c]: REG (rw) ADC channel 3 offset on RFFE switch state 0 (inverted)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch3_swclk_0_offset;
 
-  /* [0x150]: REG (rw) ADC channel 0 offset on RFFE switch state 1 (direct) */
+  /* [0x150]: REG (rw) ADC channel 0 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch0_swclk_1_offset;
 
-  /* [0x154]: REG (rw) ADC channel 1 offset on RFFE switch state 1 (direct) */
+  /* [0x154]: REG (rw) ADC channel 1 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch1_swclk_1_offset;
 
-  /* [0x158]: REG (rw) ADC channel 2 offset on RFFE switch state 1 (direct) */
+  /* [0x158]: REG (rw) ADC channel 2 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch2_swclk_1_offset;
 
-  /* [0x15c]: REG (rw) ADC channel 3 offset on RFFE switch state 1 (direct) */
+  /* [0x15c]: REG (rw) ADC channel 3 offset on RFFE switch state 1 (direct)
+Uses 2's complement representation and is subtracted from ADC samples.
+ */
   uint32_t adc_ch3_swclk_1_offset;
 };
 #endif /* !__ASSEMBLER__*/

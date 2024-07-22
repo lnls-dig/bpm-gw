@@ -2207,9 +2207,12 @@ memory-map:
       address: 0x00000140
       width: 32
       access: rw
-      description: ADC channel 0 offset on RFFE switch state 0 (inverted)
+      description: |
+        ADC channel 0 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 0 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2225,9 +2228,12 @@ memory-map:
       address: 0x00000144
       width: 32
       access: rw
-      description: ADC channel 1 offset on RFFE switch state 0 (inverted)
+      description: |
+        ADC channel 1 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 1 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2243,9 +2249,12 @@ memory-map:
       address: 0x00000148
       width: 32
       access: rw
-      description: ADC channel 2 offset on RFFE switch state 0 (inverted)
+      description: |
+        ADC channel 2 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 2 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2261,9 +2270,12 @@ memory-map:
       address: 0x0000014c
       width: 32
       access: rw
-      description: ADC channel 3 offset on RFFE switch state 0 (inverted)
+      description: |
+        ADC channel 3 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 3 offset on RFFE switch state 0 (inverted)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2279,9 +2291,12 @@ memory-map:
       address: 0x00000150
       width: 32
       access: rw
-      description: ADC channel 0 offset on RFFE switch state 1 (direct)
+      description: |
+        ADC channel 0 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 0 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2297,9 +2312,12 @@ memory-map:
       address: 0x00000154
       width: 32
       access: rw
-      description: ADC channel 1 offset on RFFE switch state 1 (direct)
+      description: |
+        ADC channel 1 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 1 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2315,9 +2333,12 @@ memory-map:
       address: 0x00000158
       width: 32
       access: rw
-      description: ADC channel 2 offset on RFFE switch state 1 (direct)
+      description: |
+        ADC channel 2 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 2 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
@@ -2333,9 +2354,12 @@ memory-map:
       address: 0x0000015c
       width: 32
       access: rw
-      description: ADC channel 3 offset on RFFE switch state 1 (direct)
+      description: |
+        ADC channel 3 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       comment: |
         ADC channel 3 offset on RFFE switch state 1 (direct)
+        Uses 2's complement representation and is subtracted from ADC samples.
       children:
       - field:
           name: data
