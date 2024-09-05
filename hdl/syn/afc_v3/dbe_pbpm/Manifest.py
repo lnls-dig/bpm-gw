@@ -14,11 +14,14 @@ syn_properties = [
     ["steps.synth_design.args.retiming", "1"],
     ["steps.synth_design.args.assert", "1"],
     ["steps.opt_design.args.verbose", "1"],
+    ["steps.opt_design.args.directive", "ExploreWithRemap"],
     ["steps.opt_design.is_enabled", "1"],
-    ["steps.phys_opt_design.args.directive", "AlternateFlowWithRetiming"],
+    ["steps.phys_opt_design.args.directive", "Explore"],
     ["steps.phys_opt_design.args.more options", "-verbose"],
     ["steps.phys_opt_design.is_enabled", "1"],
-    ["steps.post_route_phys_opt_design.args.directive", "AddRetime"],
+    ["steps.route_design.args.directive", "NoTimingRelaxation"],
+    ["steps.route_design.args.more options", "-tns_cleanup"],
+    ["steps.post_route_phys_opt_design.args.directive", "Explore"],
     ["steps.post_route_phys_opt_design.args.more options", "-verbose"],
     ["steps.post_route_phys_opt_design.is_enabled", "1"],
     ["steps.write_bitstream.args.verbose", "1"],
@@ -30,12 +33,17 @@ board = "afc"
 # For appending the afc_ref_design.xdc to synthesis
 afc_base_xdc = ['acq']
 
+files = []
+
 import os
 import sys
 if os.path.isfile("synthesis_descriptor_pkg.vhd"):
-    files = ["synthesis_descriptor_pkg.vhd"];
+    files.append("synthesis_descriptor_pkg.vhd");
 else:
     sys.exit("Generate the SDB descriptor before using HDLMake (./build_synthesis_sdb.sh)")
+
+# TCL commands file
+files.append("../commands.tcl")
 
 machine_pkg = "pbpm_fmcpico1M"
 

@@ -1,3 +1,0 @@
-As of version 2.1 HDLMake still doesn't support nor *.XCI definitions nor *.XDC constraints.
-Therefore it won't be able to create complete project.
-Use TCL script for creating proper Vivado project.

@@ -1,3 +1,0 @@
-echo "project open None" > run.tcl
-echo "process run {Generate Programming File} -force rerun_all" >> run.tcl
-xtclsh run.tcl
