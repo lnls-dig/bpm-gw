@@ -766,16 +766,12 @@ Config divisor threshold TBT register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: Config divisor threshold TBT
-<br>Minimum amplitude sum in which the position<br>calculation for TBT rate is performed, in FIX26_22
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>Config divisor threshold TBT<br><br>Minimum amplitude sum in which the position<br>calculation for TBT rate is performed, in FIX26_22</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="ds_fofb_thres"></a>
 <h3>2.2. ds_fofb_thres</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -842,16 +838,12 @@ Config divisor threshold FOFB register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: Config divisor threshold FOFB
-<br>Minimum amplitude sum in which the position<br>calculation for FOFB rate is performed, in FIX26_22
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>Config divisor threshold FOFB<br><br>Minimum amplitude sum in which the position<br>calculation for FOFB rate is performed, in FIX26_22</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="ds_monit_thres"></a>
 <h3>2.3. ds_monit_thres</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -918,16 +910,12 @@ Config divisor threshold Monit. register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: Config Divisor Threshold Monit.
-<br>Minimum amplitude sum in which the position<br>calculation for Monit. rate is performed, in FIX26_22
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>Config Divisor Threshold Monit.<br><br>Minimum amplitude sum in which the position<br>calculation for Monit. rate is performed, in FIX26_22</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="kx"></a>
 <h3>2.4. kx</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -994,16 +982,12 @@ BPM sensitivity (X axis) parameter register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: BPM sensitivity (X axis) parameter register
-<br>BPM sensitivity (X axis) parameter, in UFIX25_0.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>10000000d
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>BPM sensitivity (X axis) parameter register<br><br>BPM sensitivity (X axis) parameter, in UFIX25_0.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>10000000d</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="ky"></a>
 <h3>2.5. ky</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1070,16 +1054,12 @@ BPM sensitivity (Y axis) parameter register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: BPM sensitivity (Y axis) parameter register
-<br>BPM sensitivity (Y axis) parameter, in UFIX25_0.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>10000000d
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>BPM sensitivity (Y axis) parameter register<br><br>BPM sensitivity (Y axis) parameter, in UFIX25_0.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>10000000d</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="ksum"></a>
 <h3>2.6. ksum</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1146,16 +1126,12 @@ BPM sensitivity (Sum) parameter register
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: BPM sensitivity (Sum) parameter register
-<br>BPM sensitivity (Sum) parameter, in FIX25_24.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>1.0d
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>BPM sensitivity (Sum) parameter register<br><br>BPM sensitivity (Sum) parameter, in FIX25_24.<br>It effectively multiplies the calculated position<br>with a determined value. Typical values lie around<br>1.0d</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dsp_ctnr_tbt"></a>
 <h3>2.7. dsp_ctnr_tbt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1221,16 +1197,12 @@ DSP TBT incorrect TDM counter
  <td class="td_field" colspan="8">ch01[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-ch01
-</b>[<i>ro</i>]: TBT incorrect counter for channels 0/1 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1 (multiplexed)
-<li><b>
-ch23
-</b>[<i>ro</i>]: TBT incorrect counter for channels 2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels 2/3 (multiplexed)
-</ul>
+<dl>
+  <dt><b>ch01</b> [<i>ro</i>]</dt>
+  <dd>TBT incorrect counter for channels 0/1 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1 (multiplexed)</dd>
+  <dt><b>ch23</b> [<i>ro</i>]</dt>
+  <dd>TBT incorrect counter for channels 2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels 2/3 (multiplexed)</dd>
+</dl>
 <a name="dsp_ctnr_fofb"></a>
 <h3>2.8. dsp_ctnr_fofb</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1296,16 +1268,12 @@ DSP FOFB incorrect TDM counter
  <td class="td_field" colspan="8">ch01[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-ch01
-</b>[<i>ro</i>]: FOFB incorrect counter for channels 0/1 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1 (multiplexed)
-<li><b>
-ch23
-</b>[<i>ro</i>]: FOFB incorrect counter for channels 2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels 2/3 (multiplexed)
-</ul>
+<dl>
+  <dt><b>ch01</b> [<i>ro</i>]</dt>
+  <dd>FOFB incorrect counter for channels 0/1 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1 (multiplexed)</dd>
+  <dt><b>ch23</b> [<i>ro</i>]</dt>
+  <dd>FOFB incorrect counter for channels 2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels 2/3 (multiplexed)</dd>
+</dl>
 <a name="dsp_ctnr1_monit"></a>
 <h3>2.9. dsp_ctnr1_monit</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1371,16 +1339,12 @@ DSP Monit. incorrect TDM counter part 1
  <td class="td_field" colspan="8">cic[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-cic
-</b>[<i>ro</i>]: Monit. CIC incorrect counter for channels 0/1/2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed)
-<li><b>
-cfir
-</b>[<i>ro</i>]: Monit. CFIR incorrect counter for channels 0/1/2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1/2/3 (multiplexed)
-</ul>
+<dl>
+  <dt><b>cic</b> [<i>ro</i>]</dt>
+  <dd>Monit. CIC incorrect counter for channels 0/1/2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed)</dd>
+  <dt><b>cfir</b> [<i>ro</i>]</dt>
+  <dd>Monit. CFIR incorrect counter for channels 0/1/2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels 0/1/2/3 (multiplexed)</dd>
+</dl>
 <a name="dsp_ctnr2_monit"></a>
 <h3>2.10. dsp_ctnr2_monit</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1446,16 +1410,12 @@ DSP Monit. incorrect TDM counter part 2
  <td class="td_field" colspan="8">pfir[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pfir
-</b>[<i>ro</i>]: Monit. PFIR incorrect counter for channels 0/1/2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed) on Monit. chain
-<li><b>
-fir_01
-</b>[<i>ro</i>]: Monit. 0.1 Hz incorrect counter for channels 0/1/2/3 (multiplexed)
-<br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed) on Monit_01 chain
-</ul>
+<dl>
+  <dt><b>pfir</b> [<i>ro</i>]</dt>
+  <dd>Monit. PFIR incorrect counter for channels 0/1/2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed) on Monit. chain</dd>
+  <dt><b>fir_01</b> [<i>ro</i>]</dt>
+  <dd>Monit. 0.1 Hz incorrect counter for channels 0/1/2/3 (multiplexed)<br><br>This register holds the number of incorrect transfers<br>on TDM for channels  0/1/2/3 (multiplexed) on Monit_01 chain</dd>
+</dl>
 <a name="dsp_err_clr"></a>
 <h3>2.11. dsp_err_clr</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1549,24 +1509,16 @@ DSP error clearing
  <td class="td_field" colspan="1">tbt</td>
 </tr>
 </table>
-<ul>
-<li><b>
-tbt
-</b>[<i>wo</i>]: Clear TBT error counters
-<br>This register clears the error counter for the TBT rate<br>write 0: no effect<br>write 1: clear error counter
-<li><b>
-fofb
-</b>[<i>wo</i>]: Clear FOFB error counters
-<br>This register clears the error counter for the FOFB rate<br>write 0: no effect<br>write 1: clear error counter
-<li><b>
-monit_part1
-</b>[<i>wo</i>]: Clear Monit. CIC and CFIR error counters
-<br>This register clears the error counter for the CIC and CFIR rate<br>write 0: no effect<br>write 1: clear error counter
-<li><b>
-monit_part2
-</b>[<i>wo</i>]: Clear Monit. PFIR and Monit. 0.1 error counters
-<br>This register clears the error counter for the Monit. PFIR<br>and Monit. 0.1 rate<br>write 0: no effect<br>write 1: clear error counter
-</ul>
+<dl>
+  <dt><b>tbt</b> [<i>wo</i>]</dt>
+  <dd>Clear TBT error counters<br><br>This register clears the error counter for the TBT rate<br>write 0: no effect<br>write 1: clear error counter</dd>
+  <dt><b>fofb</b> [<i>wo</i>]</dt>
+  <dd>Clear FOFB error counters<br><br>This register clears the error counter for the FOFB rate<br>write 0: no effect<br>write 1: clear error counter</dd>
+  <dt><b>monit_part1</b> [<i>wo</i>]</dt>
+  <dd>Clear Monit. CIC and CFIR error counters<br><br>This register clears the error counter for the CIC and CFIR rate<br>write 0: no effect<br>write 1: clear error counter</dd>
+  <dt><b>monit_part2</b> [<i>wo</i>]</dt>
+  <dd>Clear Monit. PFIR and Monit. 0.1 error counters<br><br>This register clears the error counter for the Monit. PFIR<br>and Monit. 0.1 rate<br>write 0: no effect<br>write 1: clear error counter</dd>
+</dl>
 <a name="dds_cfg"></a>
 <h3>2.12. dds_cfg</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1637,44 +1589,26 @@ DDS general config registers for all channels
  <td class="td_field" colspan="1">valid_ch0</td>
 </tr>
 </table>
-<ul>
-<li><b>
-valid_ch0
-</b>[<i>rw</i>]: Valid signal for channel 0 DDS
-<br>Valid signal for channel 0 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS
-<li><b>
-test_data
-</b>[<i>rw</i>]: Test data counter for all channels
-<br>Test data counter for all channels:<br>write 0: real data<br>write 1: test counter data
-<li><b>
-reserved_ch0
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-<li><b>
-valid_ch1
-</b>[<i>rw</i>]: Valid signal for channel 1 DDS
-<br>Valid signal for channel 1 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS
-<li><b>
-reserved_ch1
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-<li><b>
-valid_ch2
-</b>[<i>rw</i>]: Valid signal for channel 2 DDS
-<br>Valid signal for channel 2 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS
-<li><b>
-reserved_ch2
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-<li><b>
-valid_ch3
-</b>[<i>rw</i>]: Valid signal for channel 3 DDS
-<br>Valid signal for channel 3 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS
-<li><b>
-reserved_ch3
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>valid_ch0</b> [<i>rw</i>]</dt>
+  <dd>Valid signal for channel 0 DDS<br><br>Valid signal for channel 0 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS</dd>
+  <dt><b>test_data</b> [<i>rw</i>]</dt>
+  <dd>Test data counter for all channels<br><br>Test data counter for all channels:<br>write 0: real data<br>write 1: test counter data</dd>
+  <dt><b>reserved_ch0</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+  <dt><b>valid_ch1</b> [<i>rw</i>]</dt>
+  <dd>Valid signal for channel 1 DDS<br><br>Valid signal for channel 1 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS</dd>
+  <dt><b>reserved_ch1</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+  <dt><b>valid_ch2</b> [<i>rw</i>]</dt>
+  <dd>Valid signal for channel 2 DDS<br><br>Valid signal for channel 2 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS</dd>
+  <dt><b>reserved_ch2</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+  <dt><b>valid_ch3</b> [<i>rw</i>]</dt>
+  <dd>Valid signal for channel 3 DDS<br><br>Valid signal for channel 3 DDS:<br>write 0: no effect<br>write 1: write phase increment and offset into DDS</dd>
+  <dt><b>reserved_ch3</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_pinc_ch0"></a>
 <h3>2.13. dds_pinc_ch0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1741,16 +1675,12 @@ DDS phase increment parameter register for channel 0
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase increment parameter register for channel 0
-<br>DDS phase increment parameter register for channel 0.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase increment parameter register for channel 0<br><br>DDS phase increment parameter register for channel 0.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_pinc_ch1"></a>
 <h3>2.14. dds_pinc_ch1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1817,16 +1747,12 @@ DDS phase increment parameter register for channel 1
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase increment parameter register for channel 1
-<br>DDS phase increment parameter register for channel 1.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase increment parameter register for channel 1<br><br>DDS phase increment parameter register for channel 1.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_pinc_ch2"></a>
 <h3>2.15. dds_pinc_ch2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1893,16 +1819,12 @@ DDS phase increment parameter register for channel 2
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase increment parameter register for channel 2
-<br>DDS phase increment parameter register for channel 2.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase increment parameter register for channel 2<br><br>DDS phase increment parameter register for channel 2.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_pinc_ch3"></a>
 <h3>2.16. dds_pinc_ch3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -1969,16 +1891,12 @@ DDS phase increment parameter register for channel 3
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase increment parameter register for channel 3
-<br>DDS phase increment parameter register for channel 3.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase increment parameter register for channel 3<br><br>DDS phase increment parameter register for channel 3.<br>It can be calculated as phase_inc = f_out * 2^(B_theta) / f_clk,<br>in which B_theta = 30 and f_clk = adc_clk, f_out = desired frequency.</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_poff_ch0"></a>
 <h3>2.17. dds_poff_ch0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2045,16 +1963,12 @@ DDS phase offset parameter register for channel 0
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase offset parameter register for channel 0
-<br>DDS phase offset parameter register for channel 0.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase offset parameter register for channel 0<br><br>DDS phase offset parameter register for channel 0.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_poff_ch1"></a>
 <h3>2.18. dds_poff_ch1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2121,16 +2035,12 @@ DDS phase offset parameter register for channel 1
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase offset parameter register for channel 1
-<br>DDS phase offset parameter register for channel 1.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase offset parameter register for channel 1<br><br>DDS phase offset parameter register for channel 1.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_poff_ch2"></a>
 <h3>2.19. dds_poff_ch2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2197,16 +2107,12 @@ DDS phase offset parameter register for channel 2
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase offset parameter register for channel 2
-<br>DDS phase offset parameter register for channel 2.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase offset parameter register for channel 2<br><br>DDS phase offset parameter register for channel 2.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dds_poff_ch3"></a>
 <h3>2.20. dds_poff_ch3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2273,16 +2179,12 @@ DDS phase offset parameter register for channel 3
  <td class="td_field" colspan="8">val[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-val
-</b>[<i>rw</i>]: DDS phase offset parameter register for channel 3
-<br>DDS phase offset parameter register for channel 2.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset
-<li><b>
-reserved
-</b>[<i>rw</i>]: Reserved
-<br>Ignore on write, read as 0's
-</ul>
+<dl>
+  <dt><b>val</b> [<i>rw</i>]</dt>
+  <dd>DDS phase offset parameter register for channel 3<br><br>DDS phase offset parameter register for channel 2.<br>It is determined as a fraction of a cycle, in FIX30_29.<br>For instance, 0.5 = 180 deegres offset</dd>
+  <dt><b>reserved</b> [<i>rw</i>]</dt>
+  <dd>Reserved<br><br>Ignore on write, read as 0's</dd>
+</dl>
 <a name="dsp_monit_amp_ch0"></a>
 <h3>2.21. dsp_monit_amp_ch0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2348,12 +2250,10 @@ Monit. Amplitude Value for channel 0
  <td class="td_field" colspan="8">dsp_monit_amp_ch0[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_amp_ch0
-</b>[<i>ro</i>]: Monit. Amplitude Value for channel 0
-<br>Monit. Amplitude Value for channel 0
-</ul>
+<dl>
+  <dt><b>dsp_monit_amp_ch0</b> [<i>ro</i>]</dt>
+  <dd>Monit. Amplitude Value for channel 0<br><br>Monit. Amplitude Value for channel 0</dd>
+</dl>
 <a name="dsp_monit_amp_ch1"></a>
 <h3>2.22. dsp_monit_amp_ch1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2419,12 +2319,10 @@ Monit. Amplitude Value for channel 1
  <td class="td_field" colspan="8">dsp_monit_amp_ch1[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_amp_ch1
-</b>[<i>ro</i>]: Monit. Amplitude Value for channel 1
-<br>Monit. Amplitude Value for channel 1
-</ul>
+<dl>
+  <dt><b>dsp_monit_amp_ch1</b> [<i>ro</i>]</dt>
+  <dd>Monit. Amplitude Value for channel 1<br><br>Monit. Amplitude Value for channel 1</dd>
+</dl>
 <a name="dsp_monit_amp_ch2"></a>
 <h3>2.23. dsp_monit_amp_ch2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2490,12 +2388,10 @@ Monit. Amplitude Value for channel 2
  <td class="td_field" colspan="8">dsp_monit_amp_ch2[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_amp_ch2
-</b>[<i>ro</i>]: Monit. Amplitude Value for channel 2
-<br>Monit. Amplitude Value for channel 2
-</ul>
+<dl>
+  <dt><b>dsp_monit_amp_ch2</b> [<i>ro</i>]</dt>
+  <dd>Monit. Amplitude Value for channel 2<br><br>Monit. Amplitude Value for channel 2</dd>
+</dl>
 <a name="dsp_monit_amp_ch3"></a>
 <h3>2.24. dsp_monit_amp_ch3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2561,12 +2457,10 @@ Monit. Amplitude Value for channel 3
  <td class="td_field" colspan="8">dsp_monit_amp_ch3[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_amp_ch3
-</b>[<i>ro</i>]: Monit. Amplitude Value for channel 3
-<br>Monit. Amplitude Value for channel 3
-</ul>
+<dl>
+  <dt><b>dsp_monit_amp_ch3</b> [<i>ro</i>]</dt>
+  <dd>Monit. Amplitude Value for channel 3<br><br>Monit. Amplitude Value for channel 3</dd>
+</dl>
 <a name="dsp_monit_pos_x"></a>
 <h3>2.25. dsp_monit_pos_x</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2632,12 +2526,10 @@ Monit. X Position Value
  <td class="td_field" colspan="8">dsp_monit_pos_x[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_pos_x
-</b>[<i>ro</i>]: Monit. X Position Value
-<br>Monit. X Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit_pos_x</b> [<i>ro</i>]</dt>
+  <dd>Monit. X Position Value<br><br>Monit. X Position Value</dd>
+</dl>
 <a name="dsp_monit_pos_y"></a>
 <h3>2.26. dsp_monit_pos_y</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2703,12 +2595,10 @@ Monit. Y Position Value
  <td class="td_field" colspan="8">dsp_monit_pos_y[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_pos_y
-</b>[<i>ro</i>]: Monit. Y Position Value
-<br>Monit. Y Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit_pos_y</b> [<i>ro</i>]</dt>
+  <dd>Monit. Y Position Value<br><br>Monit. Y Position Value</dd>
+</dl>
 <a name="dsp_monit_pos_q"></a>
 <h3>2.27. dsp_monit_pos_q</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2774,12 +2664,10 @@ Monit. Q Position Value
  <td class="td_field" colspan="8">dsp_monit_pos_q[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_pos_q
-</b>[<i>ro</i>]: Monit. Q Position Value
-<br>Monit. Q Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit_pos_q</b> [<i>ro</i>]</dt>
+  <dd>Monit. Q Position Value<br><br>Monit. Q Position Value</dd>
+</dl>
 <a name="dsp_monit_pos_sum"></a>
 <h3>2.28. dsp_monit_pos_sum</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2845,12 +2733,10 @@ Monit. Sum Position Value
  <td class="td_field" colspan="8">dsp_monit_pos_sum[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_pos_sum
-</b>[<i>ro</i>]: Monit. Sum Position Value
-<br>Monit. Sum Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit_pos_sum</b> [<i>ro</i>]</dt>
+  <dd>Monit. Sum Position Value<br><br>Monit. Sum Position Value</dd>
+</dl>
 <a name="dsp_monit_updt"></a>
 <h3>2.29. dsp_monit_updt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2916,12 +2802,10 @@ Monit. Amp/Pos update trigger
  <td class="td_field" colspan="8">dsp_monit_updt[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit_updt
-</b>[<i>wo</i>]: Monit. Amp/Pos update trigger
-<br>Monit. Amp/Pos update trigger
-</ul>
+<dl>
+  <dt><b>dsp_monit_updt</b> [<i>wo</i>]</dt>
+  <dd>Monit. Amp/Pos update trigger<br><br>Monit. Amp/Pos update trigger</dd>
+</dl>
 <a name="dsp_monit1_amp_ch0"></a>
 <h3>2.30. dsp_monit1_amp_ch0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -2987,12 +2871,10 @@ Monit. 1 Amplitude Value for channel 0
  <td class="td_field" colspan="8">dsp_monit1_amp_ch0[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_amp_ch0
-</b>[<i>ro</i>]: Monit. 1 Amplitude Value for channel 0
-<br>Monit. 1 Amplitude Value for channel 0
-</ul>
+<dl>
+  <dt><b>dsp_monit1_amp_ch0</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Amplitude Value for channel 0<br><br>Monit. 1 Amplitude Value for channel 0</dd>
+</dl>
 <a name="dsp_monit1_amp_ch1"></a>
 <h3>2.31. dsp_monit1_amp_ch1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3058,12 +2940,10 @@ Monit. 1 Amplitude Value for channel 1
  <td class="td_field" colspan="8">dsp_monit1_amp_ch1[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_amp_ch1
-</b>[<i>ro</i>]: Monit. 1 Amplitude Value for channel 1
-<br>Monit. 1 Amplitude Value for channel 1
-</ul>
+<dl>
+  <dt><b>dsp_monit1_amp_ch1</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Amplitude Value for channel 1<br><br>Monit. 1 Amplitude Value for channel 1</dd>
+</dl>
 <a name="dsp_monit1_amp_ch2"></a>
 <h3>2.32. dsp_monit1_amp_ch2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3129,12 +3009,10 @@ Monit. 1 Amplitude Value for channel 2
  <td class="td_field" colspan="8">dsp_monit1_amp_ch2[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_amp_ch2
-</b>[<i>ro</i>]: Monit. 1 Amplitude Value for channel 2
-<br>Monit. 1 Amplitude Value for channel 2
-</ul>
+<dl>
+  <dt><b>dsp_monit1_amp_ch2</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Amplitude Value for channel 2<br><br>Monit. 1 Amplitude Value for channel 2</dd>
+</dl>
 <a name="dsp_monit1_amp_ch3"></a>
 <h3>2.33. dsp_monit1_amp_ch3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3200,12 +3078,10 @@ Monit. 1 Amplitude Value for channel 3
  <td class="td_field" colspan="8">dsp_monit1_amp_ch3[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_amp_ch3
-</b>[<i>ro</i>]: Monit. 1 Amplitude Value for channel 3
-<br>Monit. 1 Amplitude Value for channel 3
-</ul>
+<dl>
+  <dt><b>dsp_monit1_amp_ch3</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Amplitude Value for channel 3<br><br>Monit. 1 Amplitude Value for channel 3</dd>
+</dl>
 <a name="dsp_monit1_pos_x"></a>
 <h3>2.34. dsp_monit1_pos_x</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3271,12 +3147,10 @@ Monit. 1 X Position Value
  <td class="td_field" colspan="8">dsp_monit1_pos_x[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_pos_x
-</b>[<i>ro</i>]: Monit. 1 X Position Value
-<br>Monit. 1 X Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit1_pos_x</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 X Position Value<br><br>Monit. 1 X Position Value</dd>
+</dl>
 <a name="dsp_monit1_pos_y"></a>
 <h3>2.35. dsp_monit1_pos_y</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3342,12 +3216,10 @@ Monit. 1 Y Position Value
  <td class="td_field" colspan="8">dsp_monit1_pos_y[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_pos_y
-</b>[<i>ro</i>]: Monit. 1 Y Position Value
-<br>Monit. 1 Y Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit1_pos_y</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Y Position Value<br><br>Monit. 1 Y Position Value</dd>
+</dl>
 <a name="dsp_monit1_pos_q"></a>
 <h3>2.36. dsp_monit1_pos_q</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3413,12 +3285,10 @@ Monit. 1 Q Position Value
  <td class="td_field" colspan="8">dsp_monit1_pos_q[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_pos_q
-</b>[<i>ro</i>]: Monit. 1 Q Position Value
-<br>Monit. 1 Q Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit1_pos_q</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Q Position Value<br><br>Monit. 1 Q Position Value</dd>
+</dl>
 <a name="dsp_monit1_pos_sum"></a>
 <h3>2.37. dsp_monit1_pos_sum</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3484,12 +3354,10 @@ Monit. 1 Sum Position Value
  <td class="td_field" colspan="8">dsp_monit1_pos_sum[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_pos_sum
-</b>[<i>ro</i>]: Monit. 1 Sum Position Value
-<br>Monit. 1 Sum Position Value
-</ul>
+<dl>
+  <dt><b>dsp_monit1_pos_sum</b> [<i>ro</i>]</dt>
+  <dd>Monit. 1 Sum Position Value<br><br>Monit. 1 Sum Position Value</dd>
+</dl>
 <a name="dsp_monit1_updt"></a>
 <h3>2.38. dsp_monit1_updt</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3555,12 +3423,10 @@ Monit. 1 Amp/Pos update trigger
  <td class="td_field" colspan="8">dsp_monit1_updt[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-dsp_monit1_updt
-</b>[<i>wo</i>]: Monit. 1 Amp/Pos update trigger
-<br>Monit. 1 Amp/Pos update trigger
-</ul>
+<dl>
+  <dt><b>dsp_monit1_updt</b> [<i>wo</i>]</dt>
+  <dd>Monit. 1 Amp/Pos update trigger<br><br>Monit. 1 Amp/Pos update trigger</dd>
+</dl>
 <a name="ampfifo_monit.ampfifo_monit_r0"></a>
 <h3>2.39. ampfifo_monit.ampfifo_monit_r0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3626,11 +3492,10 @@ FIFO 'AMP FIFO Monitoring' data output register 0
  <td class="td_field" colspan="8">amp_ch0[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch0
-</b>[<i>ro</i>]: Channel 0 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch0</b> [<i>ro</i>]</dt>
+  <dd>Channel 0 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit.ampfifo_monit_r1"></a>
 <h3>2.40. ampfifo_monit.ampfifo_monit_r1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3696,11 +3561,10 @@ FIFO 'AMP FIFO Monitoring' data output register 1
  <td class="td_field" colspan="8">amp_ch1[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch1
-</b>[<i>ro</i>]: Channel 1 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch1</b> [<i>ro</i>]</dt>
+  <dd>Channel 1 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit.ampfifo_monit_r2"></a>
 <h3>2.41. ampfifo_monit.ampfifo_monit_r2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3766,11 +3630,10 @@ FIFO 'AMP FIFO Monitoring' data output register 2
  <td class="td_field" colspan="8">amp_ch2[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch2
-</b>[<i>ro</i>]: Channel 2 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch2</b> [<i>ro</i>]</dt>
+  <dd>Channel 2 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit.ampfifo_monit_r3"></a>
 <h3>2.42. ampfifo_monit.ampfifo_monit_r3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3836,11 +3699,10 @@ FIFO 'AMP FIFO Monitoring' data output register 3
  <td class="td_field" colspan="8">amp_ch3[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch3
-</b>[<i>ro</i>]: Channel 3 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch3</b> [<i>ro</i>]</dt>
+  <dd>Channel 3 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit.ampfifo_monit_csr"></a>
 <h3>2.43. ampfifo_monit.ampfifo_monit_csr</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -3931,20 +3793,14 @@ FIFO 'AMP FIFO Monitoring' control/status register
  <td class="td_field" colspan="4">count[3:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-full
-</b>[<i>ro</i>]: FIFO full flag
-<br>1: FIFO 'AMP FIFO Monitoring' is full<br>0: FIFO is not full
-<li><b>
-empty
-</b>[<i>ro</i>]: FIFO empty flag
-<br>1: FIFO 'AMP FIFO Monitoring' is empty<br>0: FIFO is not empty
-<li><b>
-count
-</b>[<i>ro</i>]: FIFO counter
-<br>Number of data records currently being stored in FIFO 'AMP FIFO Monitoring'
-</ul>
+<dl>
+  <dt><b>full</b> [<i>ro</i>]</dt>
+  <dd>FIFO full flag<br><br>1: FIFO 'AMP FIFO Monitoring' is full<br>0: FIFO is not full</dd>
+  <dt><b>empty</b> [<i>ro</i>]</dt>
+  <dd>FIFO empty flag<br><br>1: FIFO 'AMP FIFO Monitoring' is empty<br>0: FIFO is not empty</dd>
+  <dt><b>count</b> [<i>ro</i>]</dt>
+  <dd>FIFO counter<br><br>Number of data records currently being stored in FIFO 'AMP FIFO Monitoring'</dd>
+</dl>
 <a name="posfifo_monit.posfifo_monit_r0"></a>
 <h3>2.44. posfifo_monit.posfifo_monit_r0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4010,11 +3866,10 @@ FIFO 'POS FIFO Monitoring' data output register 0
  <td class="td_field" colspan="8">pos_x[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_x
-</b>[<i>ro</i>]: Channel X Position
-</ul>
+<dl>
+  <dt><b>pos_x</b> [<i>ro</i>]</dt>
+  <dd>Channel X Position</dd>
+</dl>
 <a name="posfifo_monit.posfifo_monit_r1"></a>
 <h3>2.45. posfifo_monit.posfifo_monit_r1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4080,11 +3935,10 @@ FIFO 'POS FIFO Monitoring' data output register 1
  <td class="td_field" colspan="8">pos_y[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_y
-</b>[<i>ro</i>]: Channel Y Position
-</ul>
+<dl>
+  <dt><b>pos_y</b> [<i>ro</i>]</dt>
+  <dd>Channel Y Position</dd>
+</dl>
 <a name="posfifo_monit.posfifo_monit_r2"></a>
 <h3>2.46. posfifo_monit.posfifo_monit_r2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4150,11 +4004,10 @@ FIFO 'POS FIFO Monitoring' data output register 2
  <td class="td_field" colspan="8">pos_q[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_q
-</b>[<i>ro</i>]: Channel Q Position
-</ul>
+<dl>
+  <dt><b>pos_q</b> [<i>ro</i>]</dt>
+  <dd>Channel Q Position</dd>
+</dl>
 <a name="posfifo_monit.posfifo_monit_r3"></a>
 <h3>2.47. posfifo_monit.posfifo_monit_r3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4220,11 +4073,10 @@ FIFO 'POS FIFO Monitoring' data output register 3
  <td class="td_field" colspan="8">pos_sum[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_sum
-</b>[<i>ro</i>]: Channel Sum Position
-</ul>
+<dl>
+  <dt><b>pos_sum</b> [<i>ro</i>]</dt>
+  <dd>Channel Sum Position</dd>
+</dl>
 <a name="posfifo_monit.posfifo_monit_csr"></a>
 <h3>2.48. posfifo_monit.posfifo_monit_csr</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4315,20 +4167,14 @@ FIFO 'POS FIFO Monitoring' control/status register
  <td class="td_field" colspan="4">count[3:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-full
-</b>[<i>ro</i>]: FIFO full flag
-<br>1: FIFO 'POS FIFO Monitoring' is full<br>0: FIFO is not full
-<li><b>
-empty
-</b>[<i>ro</i>]: FIFO empty flag
-<br>1: FIFO 'POS FIFO Monitoring' is empty<br>0: FIFO is not empty
-<li><b>
-count
-</b>[<i>ro</i>]: FIFO counter
-<br>Number of data records currently being stored in FIFO 'POS FIFO Monitoring'
-</ul>
+<dl>
+  <dt><b>full</b> [<i>ro</i>]</dt>
+  <dd>FIFO full flag<br><br>1: FIFO 'POS FIFO Monitoring' is full<br>0: FIFO is not full</dd>
+  <dt><b>empty</b> [<i>ro</i>]</dt>
+  <dd>FIFO empty flag<br><br>1: FIFO 'POS FIFO Monitoring' is empty<br>0: FIFO is not empty</dd>
+  <dt><b>count</b> [<i>ro</i>]</dt>
+  <dd>FIFO counter<br><br>Number of data records currently being stored in FIFO 'POS FIFO Monitoring'</dd>
+</dl>
 <a name="ampfifo_monit1.ampfifo_monit1_r0"></a>
 <h3>2.49. ampfifo_monit1.ampfifo_monit1_r0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4394,11 +4240,10 @@ FIFO 'AMP FIFO Monitoring 1' data output register 0
  <td class="td_field" colspan="8">amp_ch0[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch0
-</b>[<i>ro</i>]: Channel 0 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch0</b> [<i>ro</i>]</dt>
+  <dd>Channel 0 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit1.ampfifo_monit1_r1"></a>
 <h3>2.50. ampfifo_monit1.ampfifo_monit1_r1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4464,11 +4309,10 @@ FIFO 'AMP FIFO Monitoring 1' data output register 1
  <td class="td_field" colspan="8">amp_ch1[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch1
-</b>[<i>ro</i>]: Channel 1 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch1</b> [<i>ro</i>]</dt>
+  <dd>Channel 1 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit1.ampfifo_monit1_r2"></a>
 <h3>2.51. ampfifo_monit1.ampfifo_monit1_r2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4534,11 +4378,10 @@ FIFO 'AMP FIFO Monitoring 1' data output register 2
  <td class="td_field" colspan="8">amp_ch2[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch2
-</b>[<i>ro</i>]: Channel 2 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch2</b> [<i>ro</i>]</dt>
+  <dd>Channel 2 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit1.ampfifo_monit1_r3"></a>
 <h3>2.52. ampfifo_monit1.ampfifo_monit1_r3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4604,11 +4447,10 @@ FIFO 'AMP FIFO Monitoring 1' data output register 3
  <td class="td_field" colspan="8">amp_ch3[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-amp_ch3
-</b>[<i>ro</i>]: Channel 3 Amplitude
-</ul>
+<dl>
+  <dt><b>amp_ch3</b> [<i>ro</i>]</dt>
+  <dd>Channel 3 Amplitude</dd>
+</dl>
 <a name="ampfifo_monit1.ampfifo_monit1_csr"></a>
 <h3>2.53. ampfifo_monit1.ampfifo_monit1_csr</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4699,20 +4541,14 @@ FIFO 'AMP FIFO Monitoring 1' control/status register
  <td class="td_field" colspan="4">count[3:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-full
-</b>[<i>ro</i>]: FIFO full flag
-<br>1: FIFO 'AMP FIFO Monitoring 1' is full<br>0: FIFO is not full
-<li><b>
-empty
-</b>[<i>ro</i>]: FIFO empty flag
-<br>1: FIFO 'AMP FIFO Monitoring 1' is empty<br>0: FIFO is not empty
-<li><b>
-count
-</b>[<i>ro</i>]: FIFO counter
-<br>Number of data records currently being stored in FIFO 'AMP FIFO Monitoring 1'
-</ul>
+<dl>
+  <dt><b>full</b> [<i>ro</i>]</dt>
+  <dd>FIFO full flag<br><br>1: FIFO 'AMP FIFO Monitoring 1' is full<br>0: FIFO is not full</dd>
+  <dt><b>empty</b> [<i>ro</i>]</dt>
+  <dd>FIFO empty flag<br><br>1: FIFO 'AMP FIFO Monitoring 1' is empty<br>0: FIFO is not empty</dd>
+  <dt><b>count</b> [<i>ro</i>]</dt>
+  <dd>FIFO counter<br><br>Number of data records currently being stored in FIFO 'AMP FIFO Monitoring 1'</dd>
+</dl>
 <a name="posfifo_monit1.posfifo_monit1_r0"></a>
 <h3>2.54. posfifo_monit1.posfifo_monit1_r0</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4778,11 +4614,10 @@ FIFO 'POS FIFO Monitoring 1' data output register 0
  <td class="td_field" colspan="8">pos_x[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_x
-</b>[<i>ro</i>]: Channel X Position
-</ul>
+<dl>
+  <dt><b>pos_x</b> [<i>ro</i>]</dt>
+  <dd>Channel X Position</dd>
+</dl>
 <a name="posfifo_monit1.posfifo_monit1_r1"></a>
 <h3>2.55. posfifo_monit1.posfifo_monit1_r1</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4848,11 +4683,10 @@ FIFO 'POS FIFO Monitoring 1' data output register 1
  <td class="td_field" colspan="8">pos_y[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_y
-</b>[<i>ro</i>]: Channel Y Position
-</ul>
+<dl>
+  <dt><b>pos_y</b> [<i>ro</i>]</dt>
+  <dd>Channel Y Position</dd>
+</dl>
 <a name="posfifo_monit1.posfifo_monit1_r2"></a>
 <h3>2.56. posfifo_monit1.posfifo_monit1_r2</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4918,11 +4752,10 @@ FIFO 'POS FIFO Monitoring 1' data output register 2
  <td class="td_field" colspan="8">pos_q[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_q
-</b>[<i>ro</i>]: Channel Q Position
-</ul>
+<dl>
+  <dt><b>pos_q</b> [<i>ro</i>]</dt>
+  <dd>Channel Q Position</dd>
+</dl>
 <a name="posfifo_monit1.posfifo_monit1_r3"></a>
 <h3>2.57. posfifo_monit1.posfifo_monit1_r3</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -4988,11 +4821,10 @@ FIFO 'POS FIFO Monitoring 1' data output register 3
  <td class="td_field" colspan="8">pos_sum[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-pos_sum
-</b>[<i>ro</i>]: Channel Sum Position
-</ul>
+<dl>
+  <dt><b>pos_sum</b> [<i>ro</i>]</dt>
+  <dd>Channel Sum Position</dd>
+</dl>
 <a name="posfifo_monit1.posfifo_monit1_csr"></a>
 <h3>2.58. posfifo_monit1.posfifo_monit1_csr</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5083,20 +4915,14 @@ FIFO 'POS FIFO Monitoring 1' control/status register
  <td class="td_field" colspan="4">count[3:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-full
-</b>[<i>ro</i>]: FIFO full flag
-<br>1: FIFO 'POS FIFO Monitoring 1' is full<br>0: FIFO is not full
-<li><b>
-empty
-</b>[<i>ro</i>]: FIFO empty flag
-<br>1: FIFO 'POS FIFO Monitoring 1' is empty<br>0: FIFO is not empty
-<li><b>
-count
-</b>[<i>ro</i>]: FIFO counter
-<br>Number of data records currently being stored in FIFO 'POS FIFO Monitoring 1'
-</ul>
+<dl>
+  <dt><b>full</b> [<i>ro</i>]</dt>
+  <dd>FIFO full flag<br><br>1: FIFO 'POS FIFO Monitoring 1' is full<br>0: FIFO is not full</dd>
+  <dt><b>empty</b> [<i>ro</i>]</dt>
+  <dd>FIFO empty flag<br><br>1: FIFO 'POS FIFO Monitoring 1' is empty<br>0: FIFO is not empty</dd>
+  <dt><b>count</b> [<i>ro</i>]</dt>
+  <dd>FIFO counter<br><br>Number of data records currently being stored in FIFO 'POS FIFO Monitoring 1'</dd>
+</dl>
 <a name="sw_tag"></a>
 <h3>2.59. sw_tag</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5178,20 +5004,14 @@ Switching Tag synchronization
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: Tag Synchronization Enable
-<br>Switching Tag synchronization<br>write 0: disable tag synchronization<br>write 1: enable tag synchronization
-<li><b>
-desync_cnt_rst
-</b>[<i>rw</i>]: Switching Desynchronization Counter Reset
-<br>Switching Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter
-<li><b>
-desync_cnt
-</b>[<i>rw</i>]: Switching Desynchronization Counter
-<br>Switching Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>Tag Synchronization Enable<br><br>Switching Tag synchronization<br>write 0: disable tag synchronization<br>write 1: enable tag synchronization</dd>
+  <dt><b>desync_cnt_rst</b> [<i>rw</i>]</dt>
+  <dd>Switching Desynchronization Counter Reset<br><br>Switching Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter</dd>
+  <dt><b>desync_cnt</b> [<i>rw</i>]</dt>
+  <dd>Switching Desynchronization Counter<br><br>Switching Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+</dl>
 <a name="sw_data_mask"></a>
 <h3>2.60. sw_data_mask</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5272,16 +5092,12 @@ Switching Data Mask
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: Switching Data Mask Enable
-<br>Switching Data Mask Enable<br>write 0: disable data mask<br>write 1: enable data mask
-<li><b>
-samples
-</b>[<i>rw</i>]: Switching Data Mask Samples
-<br>Switching Data Mask Samples<br>write: number of samples to mask<br>read:  number of samples being masked
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>Switching Data Mask Enable<br><br>Switching Data Mask Enable<br>write 0: disable data mask<br>write 1: enable data mask</dd>
+  <dt><b>samples</b> [<i>rw</i>]</dt>
+  <dd>Switching Data Mask Samples<br><br>Switching Data Mask Samples<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+</dl>
 <a name="tbt_tag"></a>
 <h3>2.61. tbt_tag</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5350,24 +5166,16 @@ TbT Synchronizing Trigger
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: TbT Synchronizing Trigger Enable
-<br>TbT Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger
-<li><b>
-dly
-</b>[<i>rw</i>]: TbT Synchronizing Trigger Delay
-<br>TbT Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-<li><b>
-desync_cnt_rst
-</b>[<i>rw</i>]: TbT Desynchronization Counter Reset
-<br>TbT Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter
-<li><b>
-desync_cnt
-</b>[<i>rw</i>]: TbT Desynchronization Counter
-<br>TbT Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>TbT Synchronizing Trigger Enable<br><br>TbT Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger</dd>
+  <dt><b>dly</b> [<i>rw</i>]</dt>
+  <dd>TbT Synchronizing Trigger Delay<br><br>TbT Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+  <dt><b>desync_cnt_rst</b> [<i>rw</i>]</dt>
+  <dd>TbT Desynchronization Counter Reset<br><br>TbT Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter</dd>
+  <dt><b>desync_cnt</b> [<i>rw</i>]</dt>
+  <dd>TbT Desynchronization Counter<br><br>TbT Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+</dl>
 <a name="tbt_data_mask_ctl"></a>
 <h3>2.62. tbt_data_mask_ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5461,12 +5269,10 @@ TbT Masking Control
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: TbT Masking Enable
-<br>TbT Masking<br>write 0: disable data mask<br>write 1: enable data mask
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>TbT Masking Enable<br><br>TbT Masking<br>write 0: disable data mask<br>write 1: enable data mask</dd>
+</dl>
 <a name="tbt_data_mask_samples"></a>
 <h3>2.63. tbt_data_mask_samples</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5532,16 +5338,12 @@ TbT Data Masking Samples
  <td class="td_field" colspan="8">beg[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-beg
-</b>[<i>rw</i>]: TbT Beginning Data Masking Samples
-<br>Select the number of samples to mask at the beginning of the TbT cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-<li><b>
-end
-</b>[<i>rw</i>]: TbT Beginning Data Masking Samples
-<br>Select the number of samples to mask at the ending of the TbT cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-</ul>
+<dl>
+  <dt><b>beg</b> [<i>rw</i>]</dt>
+  <dd>TbT Beginning Data Masking Samples<br><br>Select the number of samples to mask at the beginning of the TbT cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+  <dt><b>end</b> [<i>rw</i>]</dt>
+  <dd>TbT Beginning Data Masking Samples<br><br>Select the number of samples to mask at the ending of the TbT cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+</dl>
 <a name="monit1_tag"></a>
 <h3>2.64. monit1_tag</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5610,24 +5412,16 @@ MONIT1 Synchronizing Trigger
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: MONIT1 Synchronizing Trigger Enable
-<br>MONIT1 Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger
-<li><b>
-dly
-</b>[<i>rw</i>]: MONIT1 Synchronizing Trigger Delay
-<br>MONIT1 Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-<li><b>
-desync_cnt_rst
-</b>[<i>rw</i>]: MONIT1 Desynchronization Counter Reset
-<br>MONIT1 Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter
-<li><b>
-desync_cnt
-</b>[<i>rw</i>]: MONIT1 Desynchronization Counter
-<br>MONIT1 Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Synchronizing Trigger Enable<br><br>MONIT1 Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger</dd>
+  <dt><b>dly</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Synchronizing Trigger Delay<br><br>MONIT1 Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+  <dt><b>desync_cnt_rst</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Desynchronization Counter Reset<br><br>MONIT1 Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter</dd>
+  <dt><b>desync_cnt</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Desynchronization Counter<br><br>MONIT1 Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+</dl>
 <a name="monit1_data_mask_ctl"></a>
 <h3>2.65. monit1_data_mask_ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5721,12 +5515,10 @@ MONIT1 Masking Control
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: MONIT1 Masking Enable
-<br>MONIT1 Masking<br>write 0: disable data mask<br>write 1: enable data mask
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Masking Enable<br><br>MONIT1 Masking<br>write 0: disable data mask<br>write 1: enable data mask</dd>
+</dl>
 <a name="monit1_data_mask_samples"></a>
 <h3>2.66. monit1_data_mask_samples</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5792,16 +5584,12 @@ MONIT1 Data Masking Samples
  <td class="td_field" colspan="8">beg[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-beg
-</b>[<i>rw</i>]: MONIT1 Beginning Data Masking Samples
-<br>Select the number of samples to mask at the beginning of the MONIT1 cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-<li><b>
-end
-</b>[<i>rw</i>]: MONIT1 Beginning Data Masking Samples
-<br>Select the number of samples to mask at the ending of the MONIT1 cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-</ul>
+<dl>
+  <dt><b>beg</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Beginning Data Masking Samples<br><br>Select the number of samples to mask at the beginning of the MONIT1 cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+  <dt><b>end</b> [<i>rw</i>]</dt>
+  <dd>MONIT1 Beginning Data Masking Samples<br><br>Select the number of samples to mask at the ending of the MONIT1 cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+</dl>
 <a name="monit_tag"></a>
 <h3>2.67. monit_tag</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5870,24 +5658,16 @@ MONIT Synchronizing Trigger
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: MONIT Synchronizing Trigger Enable
-<br>MONIT Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger
-<li><b>
-dly
-</b>[<i>rw</i>]: MONIT Synchronizing Trigger Delay
-<br>MONIT Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-<li><b>
-desync_cnt_rst
-</b>[<i>rw</i>]: MONIT Desynchronization Counter Reset
-<br>MONIT Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter
-<li><b>
-desync_cnt
-</b>[<i>rw</i>]: MONIT Desynchronization Counter
-<br>MONIT Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>MONIT Synchronizing Trigger Enable<br><br>MONIT Synchronizing Trigger Enable<br>write 0: disable trigger<br>write 1: enable trigger</dd>
+  <dt><b>dly</b> [<i>rw</i>]</dt>
+  <dd>MONIT Synchronizing Trigger Delay<br><br>MONIT Synchronizing Trigger Delay<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+  <dt><b>desync_cnt_rst</b> [<i>rw</i>]</dt>
+  <dd>MONIT Desynchronization Counter Reset<br><br>MONIT Desynchronization Counter Reset<br>write 0: no change<br>write 1: reset counter</dd>
+  <dt><b>desync_cnt</b> [<i>rw</i>]</dt>
+  <dd>MONIT Desynchronization Counter<br><br>MONIT Desynchronization Counter<br>write: number of samples to delay trigger<br>read:  number of samples being delayed</dd>
+</dl>
 <a name="monit_data_mask_ctl"></a>
 <h3>2.68. monit_data_mask_ctl</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -5981,12 +5761,10 @@ MONIT Masking Control
  <td class="td_field" colspan="1">en</td>
 </tr>
 </table>
-<ul>
-<li><b>
-en
-</b>[<i>rw</i>]: MONIT Masking Enable
-<br>MONIT Masking<br>write 0: disable data mask<br>write 1: enable data mask
-</ul>
+<dl>
+  <dt><b>en</b> [<i>rw</i>]</dt>
+  <dd>MONIT Masking Enable<br><br>MONIT Masking<br>write 0: disable data mask<br>write 1: enable data mask</dd>
+</dl>
 <a name="monit_data_mask_samples"></a>
 <h3>2.69. monit_data_mask_samples</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6052,16 +5830,12 @@ MONIT Data Masking Samples
  <td class="td_field" colspan="8">beg[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-beg
-</b>[<i>rw</i>]: MONIT Beginning Data Masking Samples
-<br>Select the number of samples to mask at the beginning of the MONIT cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-<li><b>
-end
-</b>[<i>rw</i>]: MONIT Beginning Data Masking Samples
-<br>Select the number of samples to mask at the ending of the MONIT cycle<br>write: number of samples to mask<br>read:  number of samples being masked
-</ul>
+<dl>
+  <dt><b>beg</b> [<i>rw</i>]</dt>
+  <dd>MONIT Beginning Data Masking Samples<br><br>Select the number of samples to mask at the beginning of the MONIT cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+  <dt><b>end</b> [<i>rw</i>]</dt>
+  <dd>MONIT Beginning Data Masking Samples<br><br>Select the number of samples to mask at the ending of the MONIT cycle<br>write: number of samples to mask<br>read:  number of samples being masked</dd>
+</dl>
 <a name="offset_x"></a>
 <h3>2.70. offset_x</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6127,12 +5901,10 @@ BPM X position offset parameter register
  <td class="td_field" colspan="8">offset_x[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-offset_x
-</b>[<i>rw</i>]: BPM X position offset parameter register
-<br>BPM X position offset to be subtracted from calculated positions
-</ul>
+<dl>
+  <dt><b>offset_x</b> [<i>rw</i>]</dt>
+  <dd>BPM X position offset parameter register<br><br>BPM X position offset to be subtracted from calculated positions</dd>
+</dl>
 <a name="offset_y"></a>
 <h3>2.71. offset_y</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6198,12 +5970,10 @@ BPM Y position offset parameter register
  <td class="td_field" colspan="8">offset_y[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-offset_y
-</b>[<i>rw</i>]: BPM Y position offset parameter register
-<br>BPM Y position offset to be subtracted from calculated positions
-</ul>
+<dl>
+  <dt><b>offset_y</b> [<i>rw</i>]</dt>
+  <dd>BPM Y position offset parameter register<br><br>BPM Y position offset to be subtracted from calculated positions</dd>
+</dl>
 <a name="adc_gains_fixed_point_pos"></a>
 <h3>2.72. adc_gains_fixed_point_pos</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6269,11 +6039,10 @@ ADC gains fixed-point position constant
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>ro</i>]: fixed-point position constant value
-</ul>
+<dl>
+  <dt><b>data</b> [<i>ro</i>]</dt>
+  <dd>fixed-point position constant value</dd>
+</dl>
 <a name="adc_ch0_swclk_0_gain"></a>
 <h3>2.73. adc_ch0_swclk_0_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6339,12 +6108,10 @@ ADC channel 0 gain on RFFE switch state 0 (direct)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch1_swclk_0_gain"></a>
 <h3>2.74. adc_ch1_swclk_0_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6410,12 +6177,10 @@ ADC channel 1 gain on RFFE switch state 0 (direct)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch2_swclk_0_gain"></a>
 <h3>2.75. adc_ch2_swclk_0_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6481,12 +6246,10 @@ ADC channel 2 gain on RFFE switch state 0 (direct)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch3_swclk_0_gain"></a>
 <h3>2.76. adc_ch3_swclk_0_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6552,12 +6315,10 @@ ADC channel 3 gain on RFFE switch state 0 (direct)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch0_swclk_1_gain"></a>
 <h3>2.77. adc_ch0_swclk_1_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6623,12 +6384,10 @@ ADC channel 0 gain on RFFE switch state 1 (inverted)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch1_swclk_1_gain"></a>
 <h3>2.78. adc_ch1_swclk_1_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6694,12 +6453,10 @@ ADC channel 1 gain on RFFE switch state 1 (inverted)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch2_swclk_1_gain"></a>
 <h3>2.79. adc_ch2_swclk_1_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6765,12 +6522,10 @@ ADC channel 2 gain on RFFE switch state 1 (inverted)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch3_swclk_1_gain"></a>
 <h3>2.80. adc_ch3_swclk_1_gain</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6836,12 +6591,10 @@ ADC channel 3 gain on RFFE switch state 1 (inverted)
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: gain
-<br>SFIX32_31.
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>gain<br><br>SFIX32_31.</dd>
+</dl>
 <a name="adc_ch0_swclk_0_offset"></a>
 <h3>2.81. adc_ch0_swclk_0_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -6921,11 +6674,10 @@ ADC channel 0 offset on RFFE switch state 0 (direct)<br>Uses 2's complement repr
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch1_swclk_0_offset"></a>
 <h3>2.82. adc_ch1_swclk_0_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7005,11 +6757,10 @@ ADC channel 1 offset on RFFE switch state 0 (direct)<br>Uses 2's complement repr
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch2_swclk_0_offset"></a>
 <h3>2.83. adc_ch2_swclk_0_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7089,11 +6840,10 @@ ADC channel 2 offset on RFFE switch state 0 (direct)<br>Uses 2's complement repr
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch3_swclk_0_offset"></a>
 <h3>2.84. adc_ch3_swclk_0_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7173,11 +6923,10 @@ ADC channel 3 offset on RFFE switch state 0 (direct)<br>Uses 2's complement repr
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch0_swclk_1_offset"></a>
 <h3>2.85. adc_ch0_swclk_1_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7257,11 +7006,10 @@ ADC channel 0 offset on RFFE switch state 1 (inverted)<br>Uses 2's complement re
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch1_swclk_1_offset"></a>
 <h3>2.86. adc_ch1_swclk_1_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7341,11 +7089,10 @@ ADC channel 1 offset on RFFE switch state 1 (inverted)<br>Uses 2's complement re
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch2_swclk_1_offset"></a>
 <h3>2.87. adc_ch2_swclk_1_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7425,11 +7172,10 @@ ADC channel 2 offset on RFFE switch state 1 (inverted)<br>Uses 2's complement re
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 <a name="adc_ch3_swclk_1_offset"></a>
 <h3>2.88. adc_ch3_swclk_1_offset</h3>
 <table cellpadding=0 cellspacing=0 border=0>
@@ -7509,11 +7255,10 @@ ADC channel 3 offset on RFFE switch state 1 (inverted)<br>Uses 2's complement re
  <td class="td_field" colspan="8">data[7:0]</td>
 </tr>
 </table>
-<ul>
-<li><b>
-data
-</b>[<i>rw</i>]: offset
-</ul>
+<dl>
+  <dt><b>data</b> [<i>rw</i>]</dt>
+  <dd>offset</dd>
+</dl>
 
 
 </BODY>
