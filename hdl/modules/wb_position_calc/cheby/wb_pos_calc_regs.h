@@ -1,5 +1,8 @@
 #ifndef __CHEBY__POS_CALC__H__
 #define __CHEBY__POS_CALC__H__
+
+#include <stdint.h>
+
 #define POS_CALC_SIZE 352 /* 0x160 */
 
 /* Config divisor threshold TBT register */

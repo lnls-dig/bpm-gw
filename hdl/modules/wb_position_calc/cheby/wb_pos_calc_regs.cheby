@@ -2038,7 +2038,6 @@ memory-map:
             type: SLV
             access_dev: WRITE_ONLY
             access_bus: READ_ONLY
-            clock: fs_clk2x_i
   - reg:
       name: adc_ch0_swclk_0_gain
       address: 0x00000120
