@@ -1,4 +1,4 @@
-vlog wb_orbit_intlk_tb.v +incdir+"." +incdir+../../sim +incdir+../../sim/regs
+vlog wb_orbit_intlk_tb.v +incdir+"." +incdir+../../../sim +incdir+../../../sim/regs
 -- make -f Makefile
 -- output log file to file "output.log", set siulation resolution to "fs"
 vsim -l output.log \
