@@ -1,0 +1,20 @@
+name: Run all testbenches
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  run_testbenches:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/lnls-dig/gw-tb-toolchain:latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Run GHDL testbenches
+        run: cd hdl/testbench && ./ghdl-ci.sh
+      - name: Run NVC testbenches
+        run: cd hdl/testbench && ./nvc-ci.sh
