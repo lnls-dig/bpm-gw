@@ -191,6 +191,10 @@ package orbit_intlk_pkg is
     -- conditional to intlk_en_i
     intlk_ang_o                                : out std_logic;
 
+    -- '1' if decim_us/ds_pos_sum_i >  intlk_min_sum_i, '0' otherwise.
+    -- Clock domain: ref_clk_i
+    intlk_sum_bigger_any_o                     : out std_logic;
+
     -- only cleared when intlk_clr_i is asserted
     intlk_ltc_o                                : out std_logic;
     -- conditional to intlk_en_i
@@ -507,7 +511,7 @@ package orbit_intlk_pkg is
   constant c_xwb_orbit_intlk_sdb : t_sdb_device := (
     abi_class     => x"0000",                 -- undocumented device
     abi_ver_major => x"01",
-    abi_ver_minor => x"00",
+    abi_ver_minor => x"01",
     wbd_endian    => c_sdb_endian_big,
     wbd_width     => x"4",                     -- 8/16/32-bit port granularity (0100)
     sdb_component => (

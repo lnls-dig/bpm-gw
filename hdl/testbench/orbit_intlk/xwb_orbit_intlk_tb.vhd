@@ -210,6 +210,21 @@ architecture sim of xwb_orbit_intlk_tb is
       ": Wishbone register DID NOT correctly identify a condition."
       severity failure;
 
+    -- Check if the minimum sum detection is correctly reflected on the
+    -- min_sum_bigger status bit
+    if signed(test_stimulus.decim_us_pos.sum) >= signed(test_stimulus.intlk_min_sum) or
+       signed(test_stimulus.decim_ds_pos.sum) >= signed(test_stimulus.intlk_min_sum) then
+      assert wb_reg(ORBIT_INTLK_STS_MIN_SUM_BIGGER_OFFSET) = '1'
+        report "Minimum sum threshold not indicated on min_sum_bigger!" & LF &
+        "Expected '1' got : '0'"
+        severity failure;
+    else
+      assert wb_reg(ORBIT_INTLK_STS_MIN_SUM_BIGGER_OFFSET) = '0'
+        report "Minimum sum threshold falsely indicated on min_sum_bigger!" & LF &
+        "Expected '0' got : '1'"
+        severity failure;
+    end if;
+
     -- Wait for some time between tests
     f_wait_cycles(clk, 1);
   end procedure;

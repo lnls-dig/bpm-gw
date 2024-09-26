@@ -181,6 +181,10 @@ port
   -- conditional to intlk_en_i
   intlk_ang_o                                : out std_logic;
 
+  -- '1' if decim_us/ds_pos_sum_i >  intlk_min_sum_i, '0' otherwise.
+  -- Clock domain: ref_clk_i
+  intlk_sum_bigger_any_o                     : out std_logic;
+
   -- only cleared when intlk_clr_i is asserted
   intlk_ltc_o                                : out std_logic;
   -- conditional to intlk_en_i
@@ -423,6 +427,7 @@ begin
     end if;
   end process;
 
+  intlk_sum_bigger_any_o <= intlk_sum_bigger_any;
   intlk_sum_bigger_en <= '1' when intlk_min_sum_en_i = '0' else intlk_sum_bigger_any;
 
   -----------------------------

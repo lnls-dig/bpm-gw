@@ -1035,10 +1035,27 @@ orbit_intlk_sts_ang_smaller_ltc_i
 
 </td>
 <td  class="td_pblock_right">
-orbit_intlk_sts_reserved_i[1:0]
+orbit_intlk_sts_min_sum_bigger_i
 </td>
 <td  class="td_arrow_right">
-&lArr;
+&larr;
+</td>
+</tr>
+<tr>
+<td  class="td_arrow_left">
+
+</td>
+<td  class="td_pblock_left">
+
+</td>
+<td  class="td_sym_center">
+
+</td>
+<td  class="td_pblock_right">
+orbit_intlk_sts_reserved_i
+</td>
+<td  class="td_arrow_right">
+&larr;
 </td>
 </tr>
 <tr>
@@ -2063,8 +2080,11 @@ General Status
 </td>
 </tr>
 <tr>
-<td style="border: solid 1px black;" colspan=2  class="td_field">
-RESERVED[1:0]
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+RESERVED
+</td>
+<td style="border: solid 1px black;" colspan=1  class="td_field">
+MIN_SUM_BIGGER
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 ANG_SMALLER_LTC
@@ -2083,9 +2103,6 @@ ANG_SMALLER_LTC_X
 </td>
 <td style="border: solid 1px black;" colspan=1  class="td_field">
 ANG_SMALLER_Y
-</td>
-<td >
-
 </td>
 </tr>
 </table>
@@ -2372,6 +2389,10 @@ ANG_SMALLER
 ANG_SMALLER_LTC
 </b>[<i>read-only</i>]: Angular Smaller Latched
 <br>Angular Smaller Latched
+<li><b>
+MIN_SUM_BIGGER
+</b>[<i>read-only</i>]: Minimum sum threshold detection
+<br>'1' if the BPM amplitudes sums are bigger than the value specified in min_sum, '0' otherwise.
 <li><b>
 RESERVED
 </b>[<i>read-only</i>]: Reserved

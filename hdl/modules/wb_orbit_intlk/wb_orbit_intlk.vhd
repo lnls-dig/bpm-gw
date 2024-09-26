@@ -520,6 +520,8 @@ begin
     intlk_ang_smaller_ltc_o                    => intlk_ang_smaller_ltc,
     intlk_ang_smaller_o                        => intlk_ang_smaller,
 
+    intlk_sum_bigger_any_o                     => regs_in.sts_min_sum_bigger_i,
+
     intlk_ltc_o                                => intlk_ltc,
     intlk_o                                    => intlk
   );

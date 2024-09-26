@@ -361,11 +361,19 @@ peripheral {
     };
 
     field {
+       name = "Minimum sum threshold detection";
+       description = "'1' if the BPM amplitudes sums are bigger than the value specified in min_sum, '0' otherwise.";
+       prefix = "min_sum_bigger";
+       type = BIT;
+       access_bus = READ_ONLY;
+       access_dev = WRITE_ONLY;
+    };
+
+    field {
        name = "Reserved";
        description = "Ignore on write, read as 0's";
        prefix = "reserved";
-       type = SLV;
-       size = 2;
+       type = BIT;
        access_bus = READ_ONLY;
        access_dev = WRITE_ONLY;
     };
