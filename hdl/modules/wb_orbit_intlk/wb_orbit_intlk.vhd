@@ -189,67 +189,6 @@ architecture rtl of wb_orbit_intlk is
   signal wb_slv_adp_in                      : t_wishbone_master_in;
   signal resized_addr                       : std_logic_vector(c_WISHBONE_ADDRESS_WIDTH-1 downto 0);
 
-  -----------------------------
-  -- Orbit Interlock signals
-  -----------------------------
-  signal intlk_en_reg                       : std_logic;
-  signal intlk_clr_reg                      : std_logic;
-  signal intlk_min_sum_en_reg               : std_logic;
-  signal intlk_min_sum_reg                  : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_trans_en_reg                 : std_logic;
-  signal intlk_trans_clr_reg                : std_logic;
-  signal intlk_trans_max_x_reg              : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_trans_max_y_reg              : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_trans_min_x_reg              : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_trans_min_y_reg              : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_ang_en_reg                   : std_logic;
-  signal intlk_ang_clr_reg                  : std_logic;
-  signal intlk_ang_max_x_reg                : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_ang_max_y_reg                : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_ang_min_x_reg                : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-  signal intlk_ang_min_y_reg                : std_logic_vector(c_INTLK_LMT_WIDTH-1 downto 0);
-
-  signal intlk_trans_bigger_x               : std_logic;
-  signal intlk_trans_bigger_y               : std_logic;
-  signal intlk_trans_bigger_ltc_x           : std_logic;
-  signal intlk_trans_bigger_ltc_y           : std_logic;
-  signal intlk_trans_bigger_any             : std_logic;
-  signal intlk_trans_bigger_ltc             : std_logic;
-  signal intlk_trans_bigger                 : std_logic;
-
-  signal intlk_trans_smaller_x              : std_logic;
-  signal intlk_trans_smaller_y              : std_logic;
-  signal intlk_trans_smaller_ltc_x          : std_logic;
-  signal intlk_trans_smaller_ltc_y          : std_logic;
-  signal intlk_trans_smaller_any            : std_logic;
-  signal intlk_trans_smaller_ltc            : std_logic;
-  signal intlk_trans_smaller                : std_logic;
-
-  signal intlk_trans_x_diff                 : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
-  signal intlk_trans_y_diff                 : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
-
-  signal intlk_ang_bigger_x                 : std_logic;
-  signal intlk_ang_bigger_y                 : std_logic;
-  signal intlk_ang_bigger_ltc_x             : std_logic;
-  signal intlk_ang_bigger_ltc_y             : std_logic;
-  signal intlk_ang_bigger_any               : std_logic;
-  signal intlk_ang_bigger_ltc               : std_logic;
-  signal intlk_ang_bigger                   : std_logic;
-
-  signal intlk_ang_smaller_x                : std_logic;
-  signal intlk_ang_smaller_y                : std_logic;
-  signal intlk_ang_smaller_ltc_x            : std_logic;
-  signal intlk_ang_smaller_ltc_y            : std_logic;
-  signal intlk_ang_smaller_any              : std_logic;
-  signal intlk_ang_smaller_ltc              : std_logic;
-  signal intlk_ang_smaller                  : std_logic;
-
-  signal intlk_ang_x_diff                   : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
-  signal intlk_ang_y_diff                   : std_logic_vector(g_DECIM_WIDTH-1 downto 0);
-
-  signal intlk                              : std_logic;
-  signal intlk_ltc                          : std_logic;
-
   component wb_orbit_intlk_regs
   port (
     rst_n_i               : in     std_logic;
@@ -324,65 +263,6 @@ begin
     regs_o                                  => regs_out
   );
 
-  -- Registers assignment
-  intlk_en_reg                  <= regs_out.ctrl_en_o;
-  intlk_clr_reg                 <= regs_out.ctrl_clr_o;
-  intlk_min_sum_en_reg          <= regs_out.ctrl_min_sum_en_o;
-  intlk_min_sum_reg             <= regs_out.min_sum_o;
-
-  intlk_trans_en_reg            <= regs_out.ctrl_trans_en_o;
-  intlk_trans_clr_reg           <= regs_out.ctrl_trans_clr_o;
-  intlk_trans_max_x_reg         <= regs_out.trans_max_x_o;
-  intlk_trans_max_y_reg         <= regs_out.trans_max_y_o;
-  intlk_trans_min_x_reg         <= regs_out.trans_min_x_o;
-  intlk_trans_min_y_reg         <= regs_out.trans_min_y_o;
-  intlk_ang_en_reg              <= regs_out.ctrl_ang_en_o;
-  intlk_ang_clr_reg             <= regs_out.ctrl_ang_clr_o;
-  intlk_ang_max_x_reg           <= regs_out.ang_max_x_o;
-  intlk_ang_max_y_reg           <= regs_out.ang_max_y_o;
-  intlk_ang_min_x_reg           <= regs_out.ang_min_x_o;
-  intlk_ang_min_y_reg           <= regs_out.ang_min_y_o;
-
-  regs_in.sts_trans_bigger_x_i      <= intlk_trans_bigger_x;
-  regs_in.sts_trans_bigger_y_i      <= intlk_trans_bigger_y;
-  regs_in.sts_trans_bigger_ltc_x_i  <= intlk_trans_bigger_ltc_x;
-  regs_in.sts_trans_bigger_ltc_y_i  <= intlk_trans_bigger_ltc_y;
-  regs_in.sts_trans_bigger_any_i    <= intlk_trans_bigger_any;
-  regs_in.sts_trans_bigger_ltc_i    <= intlk_trans_bigger_ltc;
-  regs_in.sts_trans_bigger_i        <= intlk_trans_bigger;
-
-  regs_in.sts_trans_smaller_x_i     <= intlk_trans_smaller_x;
-  regs_in.sts_trans_smaller_y_i     <= intlk_trans_smaller_y;
-  regs_in.sts_trans_smaller_ltc_x_i <= intlk_trans_smaller_ltc_x;
-  regs_in.sts_trans_smaller_ltc_y_i <= intlk_trans_smaller_ltc_y;
-  regs_in.sts_trans_smaller_any_i   <= intlk_trans_smaller_any;
-  regs_in.sts_trans_smaller_ltc_i   <= intlk_trans_smaller_ltc;
-  regs_in.sts_trans_smaller_i       <= intlk_trans_smaller;
-
-  regs_in.sts_ang_bigger_x_i        <= intlk_ang_bigger_x;
-  regs_in.sts_ang_bigger_y_i        <= intlk_ang_bigger_y;
-  regs_in.sts_ang_bigger_ltc_x_i    <= intlk_ang_bigger_ltc_x;
-  regs_in.sts_ang_bigger_ltc_y_i    <= intlk_ang_bigger_ltc_y;
-  regs_in.sts_ang_bigger_any_i      <= intlk_ang_bigger_any;
-  regs_in.sts_ang_bigger_ltc_i      <= intlk_ang_bigger_ltc;
-  regs_in.sts_ang_bigger_i          <= intlk_ang_bigger;
-
-  regs_in.sts_ang_smaller_x_i       <= intlk_ang_smaller_x;
-  regs_in.sts_ang_smaller_y_i       <= intlk_ang_smaller_y;
-  regs_in.sts_ang_smaller_ltc_x_i   <= intlk_ang_smaller_ltc_x;
-  regs_in.sts_ang_smaller_ltc_y_i   <= intlk_ang_smaller_ltc_y;
-  regs_in.sts_ang_smaller_any_i     <= intlk_ang_smaller_any;
-  regs_in.sts_ang_smaller_ltc_i     <= intlk_ang_smaller_ltc;
-  regs_in.sts_ang_smaller_i         <= intlk_ang_smaller;
-
-  regs_in.sts_intlk_i               <= intlk;
-  regs_in.sts_intlk_ltc_i           <= intlk_ltc;
-
-  regs_in.trans_x_diff_i            <= intlk_trans_x_diff;
-  regs_in.trans_y_diff_i            <= intlk_trans_y_diff;
-  regs_in.ang_x_diff_i              <= intlk_ang_x_diff;
-  regs_in.ang_y_diff_i              <= intlk_ang_y_diff;
-
   -- Unused wishbone signals
   wb_slv_adp_in.err                         <= '0';
   wb_slv_adp_in.rty                         <= '0';
@@ -407,28 +287,28 @@ begin
     -- Interlock enable and limits signals
     -----------------------------
 
-    intlk_en_i                                 => intlk_en_reg,
-    intlk_clr_i                                => intlk_clr_reg,
+    intlk_en_i                                 => regs_out.ctrl_en_o,
+    intlk_clr_i                                => regs_out.ctrl_clr_o,
     -- Minimum threshold interlock on/off
-    intlk_min_sum_en_i                         => intlk_min_sum_en_reg,
+    intlk_min_sum_en_i                         => regs_out.ctrl_min_sum_en_o,
     -- Minimum threshold to interlock
-    intlk_min_sum_i                            => intlk_min_sum_reg,
+    intlk_min_sum_i                            => regs_out.min_sum_o,
     -- Translation interlock on/off
-    intlk_trans_en_i                           => intlk_trans_en_reg,
+    intlk_trans_en_i                           => regs_out.ctrl_trans_en_o,
     -- Translation interlock clear
-    intlk_trans_clr_i                          => intlk_trans_clr_reg,
-    intlk_trans_max_x_i                        => intlk_trans_max_x_reg,
-    intlk_trans_max_y_i                        => intlk_trans_max_y_reg,
-    intlk_trans_min_x_i                        => intlk_trans_min_x_reg,
-    intlk_trans_min_y_i                        => intlk_trans_min_y_reg,
+    intlk_trans_clr_i                          => regs_out.ctrl_trans_clr_o,
+    intlk_trans_max_x_i                        => regs_out.trans_max_x_o,
+    intlk_trans_max_y_i                        => regs_out.trans_max_y_o,
+    intlk_trans_min_x_i                        => regs_out.trans_min_x_o,
+    intlk_trans_min_y_i                        => regs_out.trans_min_y_o,
     -- Angular interlock on/off
-    intlk_ang_en_i                             => intlk_ang_en_reg,
+    intlk_ang_en_i                             => regs_out.ctrl_ang_en_o,
     -- Angular interlock clear
-    intlk_ang_clr_i                            => intlk_ang_clr_reg,
-    intlk_ang_max_x_i                          => intlk_ang_max_x_reg,
-    intlk_ang_max_y_i                          => intlk_ang_max_y_reg,
-    intlk_ang_min_x_i                          => intlk_ang_min_x_reg,
-    intlk_ang_min_y_i                          => intlk_ang_min_y_reg,
+    intlk_ang_clr_i                            => regs_out.ctrl_ang_clr_o,
+    intlk_ang_max_x_i                          => regs_out.ang_max_x_o,
+    intlk_ang_max_y_i                          => regs_out.ang_max_y_o,
+    intlk_ang_min_x_i                          => regs_out.ang_min_x_o,
+    intlk_ang_min_y_i                          => regs_out.ang_min_y_o,
 
     -----------------------------
     -- Downstream ADC and position signals
@@ -470,108 +350,108 @@ begin
     -----------------------------
     -- Interlock outputs
     -----------------------------
-    intlk_trans_bigger_x_o                     => intlk_trans_bigger_x,
-    intlk_trans_bigger_y_o                     => intlk_trans_bigger_y,
+    intlk_trans_bigger_x_o                     => regs_in.sts_trans_bigger_x_i,
+    intlk_trans_bigger_y_o                     => regs_in.sts_trans_bigger_y_i,
 
-    intlk_trans_bigger_ltc_x_o                 => intlk_trans_bigger_ltc_x,
-    intlk_trans_bigger_ltc_y_o                 => intlk_trans_bigger_ltc_y,
+    intlk_trans_bigger_ltc_x_o                 => regs_in.sts_trans_bigger_ltc_x_i,
+    intlk_trans_bigger_ltc_y_o                 => regs_in.sts_trans_bigger_ltc_y_i,
 
-    intlk_trans_bigger_any_o                   => intlk_trans_bigger_any,
+    intlk_trans_bigger_any_o                   => regs_in.sts_trans_bigger_any_i,
 
-    intlk_trans_x_diff_o                       => intlk_trans_x_diff,
-    intlk_trans_y_diff_o                       => intlk_trans_y_diff,
+    intlk_trans_x_diff_o                       => regs_in.trans_x_diff_i,
+    intlk_trans_y_diff_o                       => regs_in.trans_y_diff_i,
 
-    intlk_trans_bigger_ltc_o                   => intlk_trans_bigger_ltc,
-    intlk_trans_bigger_o                       => intlk_trans_bigger,
+    intlk_trans_bigger_ltc_o                   => regs_in.sts_trans_bigger_ltc_i,
+    intlk_trans_bigger_o                       => regs_in.sts_trans_bigger_i,
 
-    intlk_trans_smaller_x_o                    => intlk_trans_smaller_x,
-    intlk_trans_smaller_y_o                    => intlk_trans_smaller_y,
+    intlk_trans_smaller_x_o                    => regs_in.sts_trans_smaller_x_i,
+    intlk_trans_smaller_y_o                    => regs_in.sts_trans_smaller_y_i,
 
-    intlk_trans_smaller_ltc_x_o                => intlk_trans_smaller_ltc_x,
-    intlk_trans_smaller_ltc_y_o                => intlk_trans_smaller_ltc_y,
+    intlk_trans_smaller_ltc_x_o                => regs_in.sts_trans_smaller_ltc_x_i,
+    intlk_trans_smaller_ltc_y_o                => regs_in.sts_trans_smaller_ltc_y_i,
 
-    intlk_trans_smaller_any_o                  => intlk_trans_smaller_any,
+    intlk_trans_smaller_any_o                  => regs_in.sts_trans_smaller_any_i,
 
-    intlk_trans_smaller_ltc_o                  => intlk_trans_smaller_ltc,
-    intlk_trans_smaller_o                      => intlk_trans_smaller,
+    intlk_trans_smaller_ltc_o                  => regs_in.sts_trans_smaller_ltc_i,
+    intlk_trans_smaller_o                      => regs_in.sts_trans_smaller_i,
 
-    intlk_ang_bigger_x_o                       => intlk_ang_bigger_x,
-    intlk_ang_bigger_y_o                       => intlk_ang_bigger_y,
+    intlk_ang_bigger_x_o                       => regs_in.sts_ang_bigger_x_i,
+    intlk_ang_bigger_y_o                       => regs_in.sts_ang_bigger_y_i,
 
-    intlk_ang_bigger_ltc_x_o                   => intlk_ang_bigger_ltc_x,
-    intlk_ang_bigger_ltc_y_o                   => intlk_ang_bigger_ltc_y,
+    intlk_ang_bigger_ltc_x_o                   => regs_in.sts_ang_bigger_ltc_x_i,
+    intlk_ang_bigger_ltc_y_o                   => regs_in.sts_ang_bigger_ltc_y_i,
 
-    intlk_ang_bigger_any_o                     => intlk_ang_bigger_any,
+    intlk_ang_bigger_any_o                     => regs_in.sts_ang_bigger_any_i,
 
-    intlk_ang_x_diff_o                         => intlk_ang_x_diff,
-    intlk_ang_y_diff_o                         => intlk_ang_y_diff,
+    intlk_ang_x_diff_o                         => regs_in.ang_x_diff_i,
+    intlk_ang_y_diff_o                         => regs_in.ang_y_diff_i,
 
-    intlk_ang_bigger_ltc_o                     => intlk_ang_bigger_ltc,
-    intlk_ang_bigger_o                         => intlk_ang_bigger,
+    intlk_ang_bigger_ltc_o                     => regs_in.sts_ang_bigger_ltc_i,
+    intlk_ang_bigger_o                         => regs_in.sts_ang_bigger_i,
 
-    intlk_ang_smaller_x_o                      => intlk_ang_smaller_x,
-    intlk_ang_smaller_y_o                      => intlk_ang_smaller_y,
+    intlk_ang_smaller_x_o                      => regs_in.sts_ang_smaller_x_i,
+    intlk_ang_smaller_y_o                      => regs_in.sts_ang_smaller_y_i,
 
-    intlk_ang_smaller_ltc_x_o                  => intlk_ang_smaller_ltc_x,
-    intlk_ang_smaller_ltc_y_o                  => intlk_ang_smaller_ltc_y,
+    intlk_ang_smaller_ltc_x_o                  => regs_in.sts_ang_smaller_ltc_x_i,
+    intlk_ang_smaller_ltc_y_o                  => regs_in.sts_ang_smaller_ltc_y_i,
 
-    intlk_ang_smaller_any_o                    => intlk_ang_smaller_any,
+    intlk_ang_smaller_any_o                    => regs_in.sts_ang_smaller_any_i,
 
-    intlk_ang_smaller_ltc_o                    => intlk_ang_smaller_ltc,
-    intlk_ang_smaller_o                        => intlk_ang_smaller,
+    intlk_ang_smaller_ltc_o                    => regs_in.sts_ang_smaller_ltc_i,
+    intlk_ang_smaller_o                        => regs_in.sts_ang_smaller_i,
 
     intlk_sum_bigger_any_o                     => regs_in.sts_min_sum_bigger_i,
 
-    intlk_ltc_o                                => intlk_ltc,
-    intlk_o                                    => intlk
+    intlk_ltc_o                                => regs_in.sts_intlk_ltc_i,
+    intlk_o                                    => regs_in.sts_intlk_i
   );
 
   -- Output assignments
-  intlk_trans_bigger_x_o      <= intlk_trans_bigger_x;
-  intlk_trans_bigger_y_o      <= intlk_trans_bigger_y;
+  intlk_trans_bigger_x_o      <= regs_in.sts_trans_bigger_x_i;
+  intlk_trans_bigger_y_o      <= regs_in.sts_trans_bigger_y_i;
 
-  intlk_trans_bigger_ltc_x_o  <= intlk_trans_bigger_ltc_x;
-  intlk_trans_bigger_ltc_y_o  <= intlk_trans_bigger_ltc_y;
+  intlk_trans_bigger_ltc_x_o  <= regs_in.sts_trans_bigger_ltc_x_i;
+  intlk_trans_bigger_ltc_y_o  <= regs_in.sts_trans_bigger_ltc_y_i;
 
-  intlk_trans_bigger_any_o    <= intlk_trans_bigger_any;
+  intlk_trans_bigger_any_o    <= regs_in.sts_trans_bigger_any_i;
 
-  intlk_trans_bigger_ltc_o    <= intlk_trans_bigger_ltc;
-  intlk_trans_bigger_o        <= intlk_trans_bigger;
+  intlk_trans_bigger_ltc_o    <= regs_in.sts_trans_bigger_ltc_i;
+  intlk_trans_bigger_o        <= regs_in.sts_trans_bigger_i;
 
-  intlk_trans_smaller_x_o     <= intlk_trans_smaller_x;
-  intlk_trans_smaller_y_o     <= intlk_trans_smaller_y;
+  intlk_trans_smaller_x_o     <= regs_in.sts_trans_smaller_x_i;
+  intlk_trans_smaller_y_o     <= regs_in.sts_trans_smaller_y_i;
 
-  intlk_trans_smaller_ltc_x_o <= intlk_trans_smaller_ltc_x;
-  intlk_trans_smaller_ltc_y_o <= intlk_trans_smaller_ltc_y;
+  intlk_trans_smaller_ltc_x_o <= regs_in.sts_trans_smaller_ltc_x_i;
+  intlk_trans_smaller_ltc_y_o <= regs_in.sts_trans_smaller_ltc_y_i;
 
-  intlk_trans_smaller_any_o   <= intlk_trans_smaller_any;
+  intlk_trans_smaller_any_o   <= regs_in.sts_trans_smaller_any_i;
 
-  intlk_trans_smaller_ltc_o   <= intlk_trans_smaller_ltc;
-  intlk_trans_smaller_o       <= intlk_trans_smaller;
+  intlk_trans_smaller_ltc_o   <= regs_in.sts_trans_smaller_ltc_i;
+  intlk_trans_smaller_o       <= regs_in.sts_trans_smaller_i;
 
-  intlk_ang_bigger_x_o        <= intlk_ang_bigger_x;
-  intlk_ang_bigger_y_o        <= intlk_ang_bigger_y;
+  intlk_ang_bigger_x_o        <= regs_in.sts_ang_bigger_x_i;
+  intlk_ang_bigger_y_o        <= regs_in.sts_ang_bigger_y_i;
 
-  intlk_ang_bigger_ltc_x_o    <= intlk_ang_bigger_ltc_x;
-  intlk_ang_bigger_ltc_y_o    <= intlk_ang_bigger_ltc_y;
+  intlk_ang_bigger_ltc_x_o    <= regs_in.sts_ang_bigger_ltc_x_i;
+  intlk_ang_bigger_ltc_y_o    <= regs_in.sts_ang_bigger_ltc_y_i;
 
-  intlk_ang_bigger_any_o      <= intlk_ang_bigger_any;
+  intlk_ang_bigger_any_o      <= regs_in.sts_ang_bigger_any_i;
 
-  intlk_ang_bigger_ltc_o      <= intlk_ang_bigger_ltc;
-  intlk_ang_bigger_o          <= intlk_ang_bigger;
+  intlk_ang_bigger_ltc_o      <= regs_in.sts_ang_bigger_ltc_i;
+  intlk_ang_bigger_o          <= regs_in.sts_ang_bigger_i;
 
-  intlk_ang_smaller_x_o       <= intlk_ang_smaller_x;
-  intlk_ang_smaller_y_o       <= intlk_ang_smaller_y;
+  intlk_ang_smaller_x_o       <= regs_in.sts_ang_smaller_x_i;
+  intlk_ang_smaller_y_o       <= regs_in.sts_ang_smaller_y_i;
 
-  intlk_ang_smaller_ltc_x_o   <= intlk_ang_smaller_ltc_x;
-  intlk_ang_smaller_ltc_y_o   <= intlk_ang_smaller_ltc_y;
+  intlk_ang_smaller_ltc_x_o   <= regs_in.sts_ang_smaller_ltc_x_i;
+  intlk_ang_smaller_ltc_y_o   <= regs_in.sts_ang_smaller_ltc_y_i;
 
-  intlk_ang_smaller_any_o     <= intlk_ang_smaller_any;
+  intlk_ang_smaller_any_o     <= regs_in.sts_ang_smaller_any_i;
 
-  intlk_ang_smaller_ltc_o     <= intlk_ang_smaller_ltc;
-  intlk_ang_smaller_o         <= intlk_ang_smaller;
+  intlk_ang_smaller_ltc_o     <= regs_in.sts_ang_smaller_ltc_i;
+  intlk_ang_smaller_o         <= regs_in.sts_ang_smaller_i;
 
-  intlk_ltc_o                 <= intlk_ltc;
-  intlk_o                     <= intlk;
+  intlk_ltc_o                 <= regs_in.sts_intlk_ltc_i;
+  intlk_o                     <= regs_in.sts_intlk_i;
 
 end rtl;
